@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Blue Harvest Coding Challenge: Bank</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <style type="text/css">
+        .customers-table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        .customers-table th{
+            padding:5px; background: #BFBFBF; border:#000000 2px solid;
+        }
+        .customers-table td{
+            padding:5px; border:#000000 2px solid;
+        }
+        .customers-table tr:nth-child(odd){
+            background: #FFFFFF;
+        }
+        .customers-table tr:nth-child(even){
+            background: #E9E9E9;
+        }
+    </style>
+
+</head>
+<body bgcolor="white">
+<H3>Add Customer</H3>
+<form action="#" th:action="@{/customers}" th:object="${customer}" method="post">
+    <!--<p>Id: <input type="text" th:field="*{id}" /></p>-->
+    <p>Name: <input type="text" th:field="*{name}" /></p>
+    <p>Surname: <input type="text" th:field="*{surname}" /></p>
+    <p>Address: <input type="text" th:field="*{address}" /></p>
+    <p>Postcode: <input type="text" th:field="*{postcode}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+<br/>
+<H3>Customers</H3>
+
+<div>
+    <table id="customersTable" class="customers-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Address</th>
+            <th>Postcode</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer, rowStat: ${customers}">
+            <td th:text="${customer.id}"></td>
+            <td th:text="${customer.name}"></td>
+            <td th:text="${customer.surname}"></td>
+            <td th:text="${customer.address}"></td>
+            <td th:text="${customer.postcode}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--<p th:each="customer : ${customers}">-->
+    <!--<span th:text="${customer}"></span>-->
+<!--</p>-->
+</body>
+</html>

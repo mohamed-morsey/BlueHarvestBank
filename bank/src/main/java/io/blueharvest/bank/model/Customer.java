@@ -25,7 +25,7 @@ public class Customer {
     private Set<Account> accounts;
 
     public Customer() {
-        id = 0l;
+        id = 0L;
     }
 
     public Customer(Long id) {

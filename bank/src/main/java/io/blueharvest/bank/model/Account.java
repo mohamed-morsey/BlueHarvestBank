@@ -1,12 +1,14 @@
 package io.blueharvest.bank.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import java.util.Set;
 
 /**
  * A bank account belonging to a specific customer
@@ -17,10 +19,9 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Entity
 public class Account {
     private Long id;
-
-    private Long balance;
-
+    private Long credit;
     private Customer customer;
+    private Set<Transaction> transactions;
 
     public Account() {
     }
@@ -29,14 +30,14 @@ public class Account {
         this(id, 0L);
     }
 
-    public Account(Long id, Long balance) {
+    public Account(Long id, Long credit) {
         this.id = id;
-        this.balance = balance;
+        this.credit = credit;
     }
 
-    public Account(Long id, Long balance, Customer customer) {
+    public Account(Long id, Long credit, Customer customer) {
         this.id = id;
-        this.balance = balance;
+        this.credit = credit;
         this.customer = customer;
     }
 
@@ -50,12 +51,12 @@ public class Account {
         this.id = id;
     }
 
-    public Long getBalance() {
-        return balance;
+    public Long getCredit() {
+        return credit;
     }
 
-    public void setBalance(Long balance) {
-        this.balance = balance;
+    public void setCredit(Long credit) {
+        this.credit = credit;
     }
 
     @ManyToOne
@@ -66,6 +67,15 @@ public class Account {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> accounts) {
+        this.transactions = transactions;
     }
 
     @Override
@@ -92,7 +102,7 @@ public class Account {
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", balance=" + balance +
+                ", credit=" + credit +
                 ", customer=" + customer +
                 '}';
     }

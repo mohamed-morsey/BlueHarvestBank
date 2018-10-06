@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,17 +24,19 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.List;
 
 import static io.blueharvest.bank.constant.Fields.ID_PARAMETER;
+import static io.blueharvest.bank.constant.Messages.INVALID_PARAMETER_ERROR;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_PATH_SEGMENT;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
- * Controller for bank
+ * Controller for customers
  *
  * @author Mohamed Morsey
- * Date: 2018-08-29
+ * Date: 2018-10-05
  **/
 @Controller
 @RequestMapping("/" + CUSTOMERS_PATH_SEGMENT)
@@ -75,20 +78,19 @@ public class CustomerController {
         return CUSTOMERS_PATH_SEGMENT;
     }
 
-    @GetMapping(path = "/{id}", name = "getCustomer")
-    public ResponseEntity<Customer> getCustomer(@NotNull @PathVariable(ID_PARAMETER) String id) {
-
-        if ((StringUtils.isBlank(id)) || (!StringUtils.isNumeric(id))) {
-            return ResponseEntity.status(SC_BAD_REQUEST).build();
-        }
-
-        return ResponseEntity.ok(customerService.get(Long.parseLong(id)));
-    }
+//    @GetMapping(path = "/{id}", name = "getCustomer")
+//    public ResponseEntity<Customer> getCustomer(@NotNull @PathVariable(ID_PARAMETER) String id) {
+//
+//        if ((StringUtils.isBlank(id)) || (!StringUtils.isNumeric(id))) {
+//            return ResponseEntity.status(SC_BAD_REQUEST).build();
+//        }
+//
+//        return ResponseEntity.ok(customerService.get(Long.parseLong(id)));
+//    }
 
     @PostMapping(name = "createCustomer")
     public String createCustomer(@Valid @ModelAttribute Customer customer, Errors errors, BindingResult bindingResult) {
         if (errors.hasErrors()) {
-//            bindingResult.addAllErrors(errors);
             return "/" + CUSTOMERS_PATH_SEGMENT;
         }
         customerService.create(customer);
@@ -96,7 +98,7 @@ public class CustomerController {
     }
 
 //    /**
-//     * Handler for {@link IllegalArgumentException} that can be thrown in case of invalid file format parameter
+//     * Handler for {@link IllegalArgumentException} that can be thrown in case of invalid parameter is passed
 //     *
 //     * @param exp
 //     * @param response
@@ -104,7 +106,7 @@ public class CustomerController {
 //     */
 //    @ExceptionHandler
 //    private void handleIllegalArgumentException(IllegalArgumentException exp, HttpServletResponse response) throws IOException {
-//        String errorMessage = INVALID_FILE_FORMAT_ERROR + ": " + exp.getMessage();
+//        String errorMessage = INVALID_PARAMETER_ERROR + ": " + exp.getMessage();
 //
 //        logger.error(errorMessage, exp);
 //        response.sendError(SC_BAD_REQUEST, errorMessage);

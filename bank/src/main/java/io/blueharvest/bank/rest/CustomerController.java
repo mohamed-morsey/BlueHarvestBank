@@ -5,24 +5,24 @@ import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.validation.CustomerValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.List;
 
 import static io.blueharvest.bank.constant.Fields.ID_PARAMETER;
@@ -38,15 +38,17 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 @Controller
 @RequestMapping("/" + CUSTOMERS_PATH_SEGMENT)
 public class CustomerController {
+    public static final String CUSTOMER_PATH_SEGMENT = "customer";
     public static final String CUSTOMERS_PATH_SEGMENT = "customers";
-
+    public static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
+    public static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
 
     private CustomerService customerService;
     private CustomerValidator customerValidator;
     private Logger logger;
 
     @Inject
-    public CustomerController(CustomerService customerService, CustomerValidator customerValidator, Logger logger){
+    public CustomerController(CustomerService customerService, CustomerValidator customerValidator, Logger logger) {
         this.customerService = customerService;
         this.customerValidator = customerValidator;
         this.logger = logger;
@@ -57,27 +59,40 @@ public class CustomerController {
         binder.addValidators(customerValidator);
     }
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, name = "getCustomers")
-    @ResponseStatus()
-    public ResponseEntity<List<Customer>> getCustomers(){
-        return ResponseEntity.ok(customerService.getAll());
+    @GetMapping
+    public String init(Model model) {
+        List<Customer> customers = customerService.getAll();
+        model.addAttribute(CUSTOMERS_ATTRIBUTE_NAME, customers);
+        model.addAttribute(CUSTOMER_ATTRIBUTE_NAME, new Customer());
+        return CUSTOMERS_PATH_SEGMENT;
     }
 
-    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE}, name = "getCustomer")
-    public ResponseEntity<Customer> getCustomer(@NotNull @PathVariable(ID_PARAMETER) String id){
+    @GetMapping(path = "/list", name = "getCustomers")
+    @ResponseStatus()
+    public String getCustomers(Model model) {
+        List<Customer> customers = customerService.getAll();
+        model.addAttribute(CUSTOMERS_ATTRIBUTE_NAME, customers);
+        return CUSTOMERS_PATH_SEGMENT;
+    }
 
-        if((StringUtils.isBlank(id)) || (!StringUtils.isNumeric(id))){
+    @GetMapping(path = "/{id}", name = "getCustomer")
+    public ResponseEntity<Customer> getCustomer(@NotNull @PathVariable(ID_PARAMETER) String id) {
+
+        if ((StringUtils.isBlank(id)) || (!StringUtils.isNumeric(id))) {
             return ResponseEntity.status(SC_BAD_REQUEST).build();
         }
 
         return ResponseEntity.ok(customerService.get(Long.parseLong(id)));
     }
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE}, name = "createCustomer")
-    public ResponseEntity createCustomer(@Validated @RequestBody final Customer customer){
+    @PostMapping(name = "createCustomer")
+    public String createCustomer(@Valid @ModelAttribute Customer customer, Errors errors, BindingResult bindingResult) {
+        if (errors.hasErrors()) {
+//            bindingResult.addAllErrors(errors);
+            return "/" + CUSTOMERS_PATH_SEGMENT;
+        }
         customerService.create(customer);
-        return ResponseEntity.ok().build();
+        return "redirect:/" + CUSTOMERS_PATH_SEGMENT;
     }
 
 //    /**

@@ -41,9 +41,11 @@ import org.springframework.validation.Validator;
 import static io.blueharvest.bank.constant.Fields.ADDRESS_FIELD;
 import static io.blueharvest.bank.constant.Fields.NAME_FIELD;
 import static io.blueharvest.bank.constant.Fields.POSTCODE_FIELD;
+import static io.blueharvest.bank.constant.Fields.SURNAME_FIELD;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ADDRESS_ERROR;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_NAME_ERROR;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_POSTCODE_ERROR;
+import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_SURNAME_ERROR;
 
 /**
  * Validator for {@link io.blueharvest.bank.model.Customer}
@@ -65,6 +67,10 @@ public class CustomerValidator implements Validator {
 
         if (StringUtils.isBlank(customer.getName())) {
             errors.rejectValue(NAME_FIELD, BLANK_INVALID_NAME_ERROR);
+        }
+
+        if (StringUtils.isBlank(customer.getName())) {
+            errors.rejectValue(SURNAME_FIELD, BLANK_INVALID_SURNAME_ERROR);
         }
 
         if (StringUtils.isBlank(customer.getAddress())) {

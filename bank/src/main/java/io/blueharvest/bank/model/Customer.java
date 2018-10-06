@@ -1,12 +1,10 @@
 package io.blueharvest.bank.model;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.Date;
 import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -20,33 +18,35 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Entity
 public class Customer {
     private Long id;
-
     private String name;
+    private String surname;
     private String address;
     private String postcode;
     private Set<Account> accounts;
 
     public Customer() {
+        id = 0l;
     }
 
     public Customer(Long id) {
-        this(id, EMPTY, EMPTY, EMPTY);
+        this(id, EMPTY, EMPTY, EMPTY, EMPTY);
     }
 
-    public Customer(Long id, String name, String address, String postcode) {
+    public Customer(Long id, String name, String surname, String address, String postcode) {
         this.id = id;
         this.name = name;
+        this.surname = surname;
         this.address = address;
         this.postcode = postcode;
     }
 
     @Id
     @GeneratedValue
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,6 +56,14 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getAddress() {
@@ -108,8 +116,10 @@ public class Customer {
         return "Customer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
                 ", address='" + address + '\'' +
                 ", postcode='" + postcode + '\'' +
+                ", accounts=" + accounts +
                 '}';
     }
 }

@@ -15,6 +15,7 @@ public final class Messages {
     //region error messages
     public static final String ID_NULL_ERROR = "ID cannot be null";
     public static final String BLANK_INVALID_NAME_ERROR = "Blank or invalid name";
+    public static final String BLANK_INVALID_SURNAME_ERROR = "Blank or invalid surname";
     public static final String BLANK_INVALID_ADDRESS_ERROR = "Blank or invalid address";
     public static final String BLANK_INVALID_POSTCODE_ERROR = "Blank or invalid postcode";
     //endregion

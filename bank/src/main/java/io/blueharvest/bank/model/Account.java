@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -18,26 +19,27 @@ import java.util.Set;
 @Entity
 public class Account {
     private Long id;
-    private Long credit;
+    private Double credit;
+    private Date establishDate;
     private Customer customer;
     private Set<Transaction> transactions;
 
     public Account() {
-        id = 0L;
+        this(0L, 0.0D);
     }
 
     public Account(Long id) {
-        this(id, 0L);
+        this(id, 0.0D);
     }
 
-    public Account(Long id, Long credit) {
+    public Account(Long id, Double credit) {
         this.id = id;
         this.credit = credit;
+        this.establishDate = new Date();
     }
 
-    public Account(Long id, Long credit, Customer customer) {
-        this.id = id;
-        this.credit = credit;
+    public Account(Long id, Double credit, Customer customer) {
+        this(id, credit);
         this.customer = customer;
     }
 
@@ -51,12 +53,20 @@ public class Account {
         this.id = id;
     }
 
-    public Long getCredit() {
+    public Double getCredit() {
         return credit;
     }
 
-    public void setCredit(Long credit) {
+    public void setCredit(Double credit) {
         this.credit = credit;
+    }
+
+    public Date getEstablishDate() {
+        return establishDate;
+    }
+
+    public void setEstablishDate(Date establishDate) {
+        this.establishDate = establishDate;
     }
 
     @ManyToOne

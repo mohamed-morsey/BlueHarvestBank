@@ -16,6 +16,7 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 /**
  * Handler for exceptions thrown by REST controller
+ *
  * @author Mohamed Morsey
  * Date: 2018-04-23
  */

@@ -31,6 +31,7 @@ public final class Messages {
     public static final String BLANK_INVALID_INITIAL_CREDIT_ERROR = "Blank or invalid initial credit";
     public static final String ACCOUNT_NULL_ERROR = "Account cannot be null";
     public static final String ACCOUNT_NOT_FOUND_ERROR = "Account not found";
+    public static final String ACCOUNT_CREATION_FAILED_ERROR = "Failed to create account";
     //endregion
 
     //region error messages for transactions

@@ -99,7 +99,6 @@ public class AccountController {
         }
 
         Account initializedAccount = new Account();// This account is initialized to enable setting input fields to default values
-        initializedAccount.setCredit(0L);
         initializedAccount.setCustomer(existingCustomerOptional.get());
         model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, initializedAccount); // Required for initializing the input fields
 
@@ -117,7 +116,7 @@ public class AccountController {
         }
 
         if (errors.hasErrors()) {
-            return "/" + ACCOUNTS_CONTEXT_PTAH;
+            throw new IllegalArgumentException(errors.getFieldErrors().get(0).toString());
         }
         accountService.create(account);
 

@@ -2,9 +2,9 @@ package io.blueharvest.bank.service;
 
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
+import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.repository.AccountRepository;
 import org.apache.log4j.Logger;
-import org.checkerframework.checker.nullness.Opt;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATION_FAILED_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NULL_ERROR;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
@@ -27,11 +28,15 @@ import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 public class AccountService implements CrudService<Account> {
     private AccountRepository accountRepository;
     private CustomerService customerService;
+    private TransactionService transactionService;
     private Logger logger;
+
     @Inject
-    public AccountService(AccountRepository accountRepository, CustomerService customerService, Logger logger) {
+    public AccountService(AccountRepository accountRepository, CustomerService customerService,
+                          TransactionService transactionService, Logger logger) {
         this.accountRepository = accountRepository;
         this.customerService = customerService;
+        this.transactionService = transactionService;
         this.logger = logger;
     }
 
@@ -50,15 +55,18 @@ public class AccountService implements CrudService<Account> {
     public boolean create(Account account) {
         checkNotNull(account, ACCOUNT_NULL_ERROR);
 
-        Optional<Customer> customerOptional = customerService.get(account.getCustomer().getId());
-        if(!customerOptional.isPresent()){
-            logger.warn(CUSTOMER_NOT_FOUND_ERROR);
+        Account insertedAccount = accountRepository.save(account);
+
+        // Create transaction associated with that account with the initial credit
+        if (insertedAccount == null) {
+            logger.warn(ACCOUNT_CREATION_FAILED_ERROR);
             return false;
         }
 
-        account.setCustomer(customerOptional.get());
-        Account insertedAccount = accountRepository.save(account);
-        return insertedAccount != null;
+        Transaction initialTransaction = new Transaction();
+        initialTransaction.setAccount(insertedAccount);
+        initialTransaction.setValue(account.getCredit());
+        return transactionService.create(initialTransaction);
     }
 
     @Override
@@ -71,7 +79,7 @@ public class AccountService implements CrudService<Account> {
         }
 
         Optional<Customer> customerOptional = customerService.get(account.getCustomer().getId());
-        if(!customerOptional.isPresent()){
+        if (!customerOptional.isPresent()) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
             return false;
         }

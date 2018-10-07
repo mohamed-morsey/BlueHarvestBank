@@ -1,8 +1,6 @@
 package io.blueharvest.bank.service;
 
-import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Transaction;
-import io.blueharvest.bank.repository.AccountRepository;
 import io.blueharvest.bank.repository.TransactionRepository;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.blueharvest.bank.constant.Messages.ACCOUNT_NULL_ERROR;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.TRANSACTION_NULL_ERROR;
 

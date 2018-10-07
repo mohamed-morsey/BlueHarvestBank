@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NULL_ERROR;
-import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
 
 /**
  * A service that supports managing bank customers

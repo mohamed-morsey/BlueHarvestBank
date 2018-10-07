@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
 import java.util.Set;
 
 /**
@@ -24,6 +23,7 @@ public class Account {
     private Set<Transaction> transactions;
 
     public Account() {
+        id = 0L;
     }
 
     public Account(Long id) {
@@ -43,11 +43,11 @@ public class Account {
 
     @Id
     @GeneratedValue
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -84,7 +84,7 @@ public class Account {
             return true;
         }
 
-        if (!(o instanceof Account)){
+        if (!(o instanceof Account)) {
             return false;
         }
 

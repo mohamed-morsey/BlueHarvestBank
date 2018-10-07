@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
@@ -32,9 +33,9 @@ public class AccountService implements CrudService<Account> {
     }
 
     @Override
-    public Account get(Long id) {
+    public Optional<Account> get(Long id) {
         checkNotNull(id, BLANK_INVALID_ID_ERROR);
-        return accountRepository.findById(id);
+        return Optional.ofNullable(accountRepository.findById(id));
     }
 
     @Override

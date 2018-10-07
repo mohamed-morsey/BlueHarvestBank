@@ -32,6 +32,11 @@ public final class Messages {
     public static final String ACCOUNT_NOT_FOUND_ERROR = "Account not found";
     //endregion
 
+    //region error messages for transactions
+    public static final String TRANSACTION_NULL_ERROR = "Transaction cannot be null";
+    public static final String TRANSACTION_NOT_FOUND_ERROR = "Transaction not found";
+    //endregion
+
     private Messages() {
         // Private constructor to prevent instantiation
     }

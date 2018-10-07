@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Date;
 
 /**
  * A transaction performed on an account
@@ -15,9 +16,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Transaction {
     private Long id;
-
     private Long value;
-
+    private Date transactionTime;
     private Account account;
 
     public Transaction() {
@@ -30,21 +30,21 @@ public class Transaction {
     public Transaction(Long id, Long value) {
         this.id = id;
         this.value = value;
+        this.transactionTime = new Date();
     }
 
     public Transaction(Long id, Long value, Account account) {
-        this.id = id;
-        this.value = value;
+        this(id, value);
         this.account = account;
     }
 
     @Id
     @GeneratedValue
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,6 +54,14 @@ public class Transaction {
 
     public void setValue(Long value) {
         this.value = value;
+    }
+
+    public Date getTransactionTime() {
+        return transactionTime;
+    }
+
+    public void setTransactionTime(Date transactionTime) {
+        this.transactionTime = transactionTime;
     }
 
     @ManyToOne
@@ -72,7 +80,7 @@ public class Transaction {
             return true;
         }
 
-        if (!(o instanceof Transaction)){
+        if (!(o instanceof Transaction)) {
             return false;
         }
 
@@ -88,9 +96,10 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "Transaction{" +
                 "id=" + id +
                 ", value=" + value +
+                ", transactionTime=" + transactionTime +
                 ", account=" + account +
                 '}';
     }

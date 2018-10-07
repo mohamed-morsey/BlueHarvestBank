@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static io.blueharvest.bank.constant.Fields.ID_PARAMETER;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
@@ -86,10 +87,9 @@ public class AccountController {
             throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
         }
 
-        Account account = accountService.get(Long.parseLong(id));
+        Optional<Account> optionalAccount = accountService.get(Long.parseLong(id));
 
-        List<Account> accounts;
-        accounts = (account == null)? ImmutableList.of() : ImmutableList.of(account);
+        List<Account> accounts = optionalAccount.map(ImmutableList::of).orElseGet(ImmutableList::of);
 
         model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
         return ACCOUNTS_PATH_SEGMENT;

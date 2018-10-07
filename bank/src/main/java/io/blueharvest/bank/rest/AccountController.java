@@ -1,38 +1,38 @@
 package io.blueharvest.bank.rest;
 
-import com.google.common.collect.ImmutableList;
 import io.blueharvest.bank.model.Account;
+import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.service.AccountService;
+import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.validation.AccountValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static io.blueharvest.bank.constant.Fields.ID_PARAMETER;
+import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
-import static io.blueharvest.bank.constant.Messages.INVALID_PARAMETER_ERROR;
-import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_PATH_SEGMENT;
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
+import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Controller for acounts
@@ -41,21 +41,22 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * Date: 2018-10-06
  **/
 @Controller
-@RequestMapping("/" + ACCOUNTS_PATH_SEGMENT)
+@RequestMapping("/" + ACCOUNTS_CONTEXT_PTAH)
 public class AccountController {
-    public static final String ACCOUNT_PATH_SEGMENT = "account";
-    public static final String ACCOUNTS_PATH_SEGMENT = "accounts";
     public static final String ACCOUNT_ATTRIBUTE_NAME = "account";
     public static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
 
     private AccountService accountService;
     private AccountValidator accountValidator;
+    private CustomerService customerService;
     private Logger logger;
 
     @Inject
-    public AccountController(AccountService accountService, AccountValidator accountValidator, Logger logger) {
+    public AccountController(AccountService accountService, AccountValidator accountValidator,
+                             CustomerService customerService, Logger logger) {
         this.accountService = accountService;
         this.accountValidator = accountValidator;
+        this.customerService = customerService;
         this.logger = logger;
     }
 
@@ -64,13 +65,13 @@ public class AccountController {
         binder.addValidators(accountValidator);
     }
 
-    @GetMapping
-    public String init(Model model) {
-        List<Account> accounts = accountService.getAll();
-        model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
-        model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, new Account());
-        return ACCOUNTS_PATH_SEGMENT;
-    }
+//    @GetMapping
+//    public String init(Model model) {
+//        List<Account> accounts = accountService.getAll();
+//        model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
+//        model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, new Account());
+//        return "/" + ACCOUNTS_CONTEXT_PTAH;
+//    }
 
 
     @GetMapping(path = "/list", name = "getAccounts")
@@ -78,44 +79,54 @@ public class AccountController {
     public String getAccounts(Model model) {
         List<Account> accounts = accountService.getAll();
         model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
-        return ACCOUNTS_PATH_SEGMENT;
+        return "/" + ACCOUNTS_CONTEXT_PTAH;
     }
 
-    @GetMapping(path = "/{id}", name = "getAccount")
-    public String getAccount(@NotNull @PathVariable(ID_PARAMETER) String id, Model model, HttpServletResponse response) {
-        if ((StringUtils.isBlank(id)) || (!StringUtils.isNumeric(id))) {
+    @GetMapping(name = "getAccountsForCustomer")
+    public String getAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
+                             Model model, HttpServletResponse response) {
+        if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
+            logger.warn(BLANK_INVALID_ID_ERROR);
             throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
         }
 
-        Optional<Account> optionalAccount = accountService.get(Long.parseLong(id));
+        Long customerIdLong = Long.parseLong(customerId);
 
-        List<Account> accounts = optionalAccount.map(ImmutableList::of).orElseGet(ImmutableList::of);
+        Optional<Customer> existingCustomerOptional = customerService.get(customerIdLong);
+        if (!existingCustomerOptional.isPresent()) {
+            logger.warn(CUSTOMER_NOT_FOUND_ERROR);
+            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
+        }
 
+        Account initializedAccount = new Account();// This account is initialized to enable setting input fields to default values
+        initializedAccount.setCredit(0L);
+        initializedAccount.setCustomer(existingCustomerOptional.get());
+        model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, initializedAccount); // Required for initializing the input fields
+
+        List<Account> accounts = accountService.getAccountsForCustomer(customerIdLong);
         model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
-        return ACCOUNTS_PATH_SEGMENT;
+
+        return "/" + ACCOUNTS_CONTEXT_PTAH;
     }
 
     @PostMapping(name = "createAccount")
-    public String createAccount(@Valid @ModelAttribute Account account, Errors errors, BindingResult bindingResult) {
+    public String createAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
+                                @Valid @ModelAttribute Account account, Errors errors) {
+        if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
+            throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
+        }
+
         if (errors.hasErrors()) {
-            return "/" + ACCOUNTS_PATH_SEGMENT;
+            return "/" + ACCOUNTS_CONTEXT_PTAH;
         }
         accountService.create(account);
-        return "redirect:/" + ACCOUNTS_PATH_SEGMENT;
+
+        // Redirect to the same page with the customer ID
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("redirect:/" + ACCOUNTS_CONTEXT_PTAH);
+        builder.queryParam(CUSTOMER_ID_PARAMETER, account.getCustomer().getId());
+
+        return builder.build().toUriString();
     }
 
-    /**
-     * Handler for {@link IllegalArgumentException} that can be thrown in case of invalid parameter is passed
-     *
-     * @param exp
-     * @param response
-     * @throws IOException
-     */
-    @ExceptionHandler
-    private void handleIllegalArgumentException(IllegalArgumentException exp, HttpServletResponse response) throws IOException {
-        String errorMessage = INVALID_PARAMETER_ERROR + ": " + exp.getMessage();
 
-        logger.error(errorMessage, exp);
-        response.sendError(SC_BAD_REQUEST, errorMessage);
-    }
 }

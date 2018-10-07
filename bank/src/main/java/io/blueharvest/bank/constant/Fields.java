@@ -26,6 +26,7 @@ public final class Fields {
     // region generic field account
     public static final String CREDIT_FIELD = "credit";
     public static final String CUSTOMER_FIELD = "customer";
+    public static final String CUSTOMER_ID_PARAMETER = "customerId";
     // endregion
 
     private Fields() {

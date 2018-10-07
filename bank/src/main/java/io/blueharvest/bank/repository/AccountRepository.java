@@ -4,6 +4,8 @@ import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Repository for {@link Account}s
  *
@@ -12,4 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  **/
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findById(Long id);
+    List<Account> findByCustomer(Customer customer);
 }

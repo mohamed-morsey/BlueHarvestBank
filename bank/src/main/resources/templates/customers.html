@@ -43,6 +43,7 @@
             <th>Surname</th>
             <th>Address</th>
             <th>Postcode</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -52,6 +53,7 @@
             <td th:text="${customer.surname}"></td>
             <td th:text="${customer.address}"></td>
             <td th:text="${customer.postcode}"></td>
+            <td><a th:href="'/accounts?customerId='+${customer.id}">View Accounts</a> </td>
         </tr>
         </tbody>
     </table>

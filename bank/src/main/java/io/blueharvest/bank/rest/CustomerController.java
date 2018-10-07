@@ -70,6 +70,11 @@ public class CustomerController {
         return CUSTOMERS_PATH_SEGMENT;
     }
 
+    /**
+     * Lists all clients in the system
+     * @param model
+     * @return
+     */
     @GetMapping(path = "/list", name = "getCustomers")
     @ResponseStatus()
     public String getCustomers(Model model) {
@@ -88,6 +93,13 @@ public class CustomerController {
 //        return ResponseEntity.ok(customerService.get(Long.parseLong(id)));
 //    }
 
+    /**
+     * Creates a new customer and adds it to the system
+     * @param customer The customer to be created
+     * @param errors
+     * @param bindingResult
+     * @return
+     */
     @PostMapping(name = "createCustomer")
     public String createCustomer(@Valid @ModelAttribute Customer customer, Errors errors, BindingResult bindingResult) {
         if (errors.hasErrors()) {

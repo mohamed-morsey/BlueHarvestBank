@@ -71,6 +71,7 @@ public class AccountController {
         return ACCOUNTS_PATH_SEGMENT;
     }
 
+
     @GetMapping(path = "/list", name = "getAccounts")
     @ResponseStatus()
     public String getAccounts(Model model) {
@@ -86,7 +87,11 @@ public class AccountController {
         }
 
         Account account = accountService.get(Long.parseLong(id));
-        model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, ImmutableList.of(account));
+
+        List<Account> accounts;
+        accounts = (account == null)? ImmutableList.of() : ImmutableList.of(account);
+
+        model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
         return ACCOUNTS_PATH_SEGMENT;
     }
 

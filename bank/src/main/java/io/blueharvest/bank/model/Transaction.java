@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 public class Transaction {
     private Long id;
-    private Double value;
+    private Double amount;
     private Date transactionTime;
     private Account account;
 
@@ -24,14 +24,14 @@ public class Transaction {
         this(0L, 0.0D);
     }
 
-    public Transaction(Long id, Double value) {
+    public Transaction(Long id, Double amount) {
         this.id = id;
-        this.value = value;
+        this.amount = amount;
         this.transactionTime = new Date();
     }
 
-    public Transaction(Long id, Double value, Account account) {
-        this(id, value);
+    public Transaction(Long id, Double amount, Account account) {
+        this(id, amount);
         this.account = account;
     }
 
@@ -45,12 +45,12 @@ public class Transaction {
         this.id = id;
     }
 
-    public Double getValue() {
-        return value;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setValue(Double value) {
-        this.value = value;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public Date getTransactionTime() {
@@ -95,7 +95,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", value=" + value +
+                ", amount=" + amount +
                 ", transactionTime=" + transactionTime +
                 ", account=" + account +
                 '}';

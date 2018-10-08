@@ -23,10 +23,14 @@ public final class Fields {
     public static final String POSTCODE_FIELD = "postcode";
     // endregion
 
-    // region generic field account
+    // region field name of account
     public static final String CREDIT_FIELD = "credit";
     public static final String CUSTOMER_FIELD = "customer";
     public static final String CUSTOMER_ID_PARAMETER = "customerId";
+    // endregion
+
+    // region field names of transaction
+    public static final String ACCOUNT_ID_PARAMETER = "accountId";
     // endregion
 
     private Fields() {

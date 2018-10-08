@@ -14,7 +14,7 @@ public interface CrudService<T> {
      * Get a specific item with its ID
      *
      * @param id The ID of the item
-     * @return The item if found
+     * @return The item if exists, {@link Optional#empty()} otherwise
      */
     Optional<T> get(Long id);
 

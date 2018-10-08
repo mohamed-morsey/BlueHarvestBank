@@ -21,7 +21,7 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
  * Date: 2018-04-23
  */
 @RestControllerAdvice
-public class ErrorHandler {
+public class BankExceptionHandler {
     private final Log logger = LogFactory.getLog(this.getClass());
 
     /**

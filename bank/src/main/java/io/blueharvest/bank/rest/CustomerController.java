@@ -106,7 +106,7 @@ public class CustomerController {
 //     * @param response
 //     * @throws IOException
 //     */
-//    @ErrorHandler
+//    @BankExceptionHandler
 //    private void handleIllegalArgumentException(IllegalArgumentException exp, HttpServletResponse response) throws IOException {
 //        String errorMessage = INVALID_PARAMETER_ERROR + ": " + exp.getMessage();
 //

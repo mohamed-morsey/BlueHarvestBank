@@ -1,7 +1,11 @@
 package io.blueharvest.bank.repository;
 
+import io.blueharvest.bank.model.Account;
+import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Repository for {@link Transaction}s
@@ -11,4 +15,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  **/
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     Transaction findById(Long id);
+
+    List<Transaction> findByAccount(Account account);
 }

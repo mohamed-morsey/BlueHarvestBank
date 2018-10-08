@@ -65,7 +65,7 @@ public class AccountService implements CrudService<Account> {
 
         Transaction initialTransaction = new Transaction();
         initialTransaction.setAccount(insertedAccount);
-        initialTransaction.setValue(account.getCredit());
+        initialTransaction.setAmount(account.getCredit());
         return transactionService.create(initialTransaction);
     }
 

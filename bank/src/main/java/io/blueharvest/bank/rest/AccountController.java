@@ -35,7 +35,7 @@ import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
- * Controller for acounts
+ * Controller for {@link Account}s
  *
  * @author Mohamed Morsey
  * Date: 2018-10-06
@@ -68,7 +68,7 @@ public class AccountController {
 //    @GetMapping
 //    public String init(Model model) {
 //        List<Account> accounts = accountService.getAll();
-//        model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
+//        model.addAttribute(TRANSACTIONS_ATTRIBUTE_NAME, accounts);
 //        model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, new Account());
 //        return "/" + ACCOUNTS_CONTEXT_PTAH;
 //    }
@@ -85,6 +85,8 @@ public class AccountController {
     @GetMapping(name = "getAccountsForCustomer")
     public String getAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
                              Model model, HttpServletResponse response) {
+
+        // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
             logger.warn(BLANK_INVALID_ID_ERROR);
             throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
@@ -92,14 +94,9 @@ public class AccountController {
 
         Long customerIdLong = Long.parseLong(customerId);
 
-        Optional<Customer> existingCustomerOptional = customerService.get(customerIdLong);
-        if (!existingCustomerOptional.isPresent()) {
-            logger.warn(CUSTOMER_NOT_FOUND_ERROR);
-            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
-        }
-
-        Account initializedAccount = new Account();// This account is initialized to enable setting input fields to default values
-        initializedAccount.setCustomer(existingCustomerOptional.get());
+        // This account is initialized to enable setting input fields to default values
+        Account initializedAccount = new Account();
+        initializedAccount.setCustomer(getCustomer(customerIdLong));
         model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, initializedAccount); // Required for initializing the input fields
 
         List<Account> accounts = accountService.getAccountsForCustomer(customerIdLong);
@@ -111,6 +108,8 @@ public class AccountController {
     @PostMapping(name = "createAccount")
     public String createAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
                                 @Valid @ModelAttribute Account account, Errors errors) {
+
+        // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
             throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
         }
@@ -118,6 +117,11 @@ public class AccountController {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException(errors.getFieldErrors().get(0).toString());
         }
+
+        // Get the customer associated with
+        Long customerIdLong = Long.parseLong(customerId);
+        account.setCustomer(getCustomer(customerIdLong));
+
         accountService.create(account);
 
         // Redirect to the same page with the customer ID
@@ -125,6 +129,16 @@ public class AccountController {
         builder.queryParam(CUSTOMER_ID_PARAMETER, account.getCustomer().getId());
 
         return builder.build().toUriString();
+    }
+
+    private Customer getCustomer(Long customerId){
+        Optional<Customer> existingCustomerOptional = customerService.get(customerId);
+        if (!existingCustomerOptional.isPresent()) {
+            logger.warn(CUSTOMER_NOT_FOUND_ERROR);
+            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
+        }
+
+        return existingCustomerOptional.get();
     }
 
 

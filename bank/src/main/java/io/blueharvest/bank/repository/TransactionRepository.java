@@ -1,7 +1,6 @@
 package io.blueharvest.bank.repository;
 
 import io.blueharvest.bank.model.Account;
-import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -16,6 +16,7 @@ public final class Messages {
     public static final String BLANK_INVALID_ID_ERROR = "Blank or invalid ID";
     public static final String INVALID_PARAMETER_ERROR = "Invalid parameter value";
     public static final String OBJECT_NOT_FOUND_ERROR = "Object not found";
+    public static final String OPERATION_FAILURE_ERROR = "Operation failed";
     //endregion
 
     //region error messages for customers
@@ -36,7 +37,7 @@ public final class Messages {
 
     //region error messages for transactions
     public static final String TRANSACTION_NULL_ERROR = "Transaction cannot be null";
-    public static final String TRANSACTION_NOT_FOUND_ERROR = "Transaction not found";
+    public static final String TRANSACTION_CREATION_FAILED_ERROR = "Failed to create transaction";
     //endregion
 
     private Messages() {

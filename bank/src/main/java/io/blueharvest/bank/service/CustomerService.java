@@ -44,11 +44,11 @@ public class CustomerService implements CrudService<Customer> {
     }
 
     @Override
-    public boolean create(Customer customer) {
+    public Optional<Customer> create(Customer customer) {
         checkNotNull(customer, CUSTOMER_NULL_ERROR);
 
         Customer insertedCustomer = customerRepository.save(customer);
-        return insertedCustomer != null;
+        return Optional.ofNullable(insertedCustomer);
     }
 
     @Override

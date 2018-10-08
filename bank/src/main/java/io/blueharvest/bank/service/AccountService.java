@@ -1,11 +1,13 @@
 package io.blueharvest.bank.service;
 
+import io.blueharvest.bank.error.TransactionalOperationException;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.repository.AccountRepository;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,6 +19,7 @@ import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NULL_ERROR;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
+import static io.blueharvest.bank.constant.Messages.TRANSACTION_CREATION_FAILED_ERROR;
 
 /**
  * A service that supports managing bank accounts
@@ -52,21 +55,10 @@ public class AccountService implements CrudService<Account> {
     }
 
     @Override
-    public boolean create(Account account) {
+    @Transactional(rollbackFor = TransactionalOperationException.class)
+    public Optional<Account> create(Account account) {
         checkNotNull(account, ACCOUNT_NULL_ERROR);
-
-        Account insertedAccount = accountRepository.save(account);
-
-        // Create transaction associated with that account with the initial credit
-        if (insertedAccount == null) {
-            logger.warn(ACCOUNT_CREATION_FAILED_ERROR);
-            return false;
-        }
-
-        Transaction initialTransaction = new Transaction();
-        initialTransaction.setAccount(insertedAccount);
-        initialTransaction.setAmount(account.getCredit());
-        return transactionService.create(initialTransaction);
+        return Optional.ofNullable(createAccountWithTransaction(account));
     }
 
     @Override
@@ -85,7 +77,6 @@ public class AccountService implements CrudService<Account> {
         }
 
         account.setCustomer(customerOptional.get());
-
         accountRepository.save(account);
         return true;
     }
@@ -114,5 +105,33 @@ public class AccountService implements CrudService<Account> {
 
         Customer customerToFind = new Customer(customerId); // The customer whose accounts should be returned
         return accountRepository.findByCustomer(customerToFind);
+    }
+
+    /**
+     * Creates an account with the specified details and creates a transaction associated with it
+     *
+     * @param account The account to be created
+     */
+    private Account createAccountWithTransaction(Account account) {
+        Account insertedAccount = accountRepository.save(account);
+
+        // Create transaction associated with that account with the initial credit
+        if (insertedAccount == null) {
+            logger.error(ACCOUNT_CREATION_FAILED_ERROR);
+            throw new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR);
+        }
+
+        // Create a transaction associated with that account
+        Transaction initialTransaction = new Transaction();
+        initialTransaction.setAccount(insertedAccount);
+        initialTransaction.setAmount(account.getCredit());
+        Optional<Transaction> insertedTransactionOptional = transactionService.create(initialTransaction);
+
+        if (!insertedTransactionOptional.isPresent()) {
+            logger.error(TRANSACTION_CREATION_FAILED_ERROR);
+            throw new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR);
+        }
+
+        return insertedAccount;
     }
 }

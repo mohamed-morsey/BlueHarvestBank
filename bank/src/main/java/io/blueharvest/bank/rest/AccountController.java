@@ -122,7 +122,7 @@ public class AccountController {
         return builder.build().toUriString();
     }
 
-    private Customer getCustomer(Long customerId){
+    private Customer getCustomer(Long customerId) {
         Optional<Customer> existingCustomerOptional = customerService.get(customerId);
         if (!existingCustomerOptional.isPresent()) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);

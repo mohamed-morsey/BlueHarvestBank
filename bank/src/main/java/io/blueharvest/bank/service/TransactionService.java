@@ -1,10 +1,8 @@
 package io.blueharvest.bank.service;
 
 import io.blueharvest.bank.model.Account;
-import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.repository.TransactionRepository;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -32,6 +30,7 @@ public class TransactionService {
 
     /**
      * Returns a specific transaction with the given ID
+     *
      * @param id The ID of the transaction
      * @return The transaction if exists, {@link Optional#empty()} otherwise
      */
@@ -42,6 +41,7 @@ public class TransactionService {
 
     /**
      * Get a list of all transactions in the system
+     *
      * @return List of all transactions in the system
      */
     public List<Transaction> getAll() {
@@ -63,14 +63,15 @@ public class TransactionService {
 
     /**
      * Creates a new transaction
+     *
      * @param transaction The transaction object to be created
      * @return True if creation was successful, false otherwise
      */
-    public boolean create(Transaction transaction) {
+    public Optional<Transaction> create(Transaction transaction) {
         checkNotNull(transaction, TRANSACTION_NULL_ERROR);
 
         Transaction insertedTransaction = transactionRepository.save(transaction);
-        return insertedTransaction != null;
+        return Optional.ofNullable(insertedTransaction);
     }
 
 }

@@ -1,41 +1,27 @@
 package io.blueharvest.bank.rest;
 
 import io.blueharvest.bank.model.Account;
-import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.service.AccountService;
-import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.service.TransactionService;
-import io.blueharvest.bank.validation.AccountValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 import static io.blueharvest.bank.constant.Fields.ACCOUNT_ID_PARAMETER;
-import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
-import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
-import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 

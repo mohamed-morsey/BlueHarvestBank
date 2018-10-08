@@ -31,7 +31,7 @@ public interface CrudService<T> {
      * @param item The item to be created
      * @return True if addition was successful, false otherwise
      */
-    boolean create(T item);
+    Optional<T> create(T item);
 
     /**
      * Updates an existing item

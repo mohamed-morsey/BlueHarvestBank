@@ -65,15 +65,6 @@ public class AccountController {
         binder.addValidators(accountValidator);
     }
 
-//    @GetMapping
-//    public String init(Model model) {
-//        List<Account> accounts = accountService.getAll();
-//        model.addAttribute(TRANSACTIONS_ATTRIBUTE_NAME, accounts);
-//        model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, new Account());
-//        return "/" + ACCOUNTS_CONTEXT_PTAH;
-//    }
-
-
     @GetMapping(path = "/list", name = "getAccounts")
     @ResponseStatus()
     public String getAccounts(Model model) {
@@ -140,6 +131,4 @@ public class AccountController {
 
         return existingCustomerOptional.get();
     }
-
-
 }

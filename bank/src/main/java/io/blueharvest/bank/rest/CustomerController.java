@@ -23,7 +23,7 @@ import java.util.List;
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 
 /**
- * Controller for customers
+ * Controller for {@link Customer}s
  *
  * @author Mohamed Morsey
  * Date: 2018-10-05
@@ -72,16 +72,6 @@ public class CustomerController {
         return "/" + CUSTOMERS_CONTEXT_PTAH;
     }
 
-//    @GetMapping(path = "/{id}", name = "getCustomer")
-//    public ResponseEntity<Customer> getCustomer(@NotNull @PathVariable(ID_PARAMETER) String id) {
-//
-//        if ((StringUtils.isBlank(id)) || (!StringUtils.isNumeric(id))) {
-//            return ResponseEntity.status(SC_BAD_REQUEST).build();
-//        }
-//
-//        return ResponseEntity.ok(customerService.get(Long.parseLong(id)));
-//    }
-
     /**
      * Creates a new customer and adds it to the system
      *
@@ -98,20 +88,5 @@ public class CustomerController {
         customerService.create(customer);
         return "redirect:/" + CUSTOMERS_CONTEXT_PTAH;
     }
-
-//    /**
-//     * Handler for {@link IllegalArgumentException} that can be thrown in case of invalid parameter is passed
-//     *
-//     * @param exp
-//     * @param response
-//     * @throws IOException
-//     */
-//    @BankExceptionHandler
-//    private void handleIllegalArgumentException(IllegalArgumentException exp, HttpServletResponse response) throws IOException {
-//        String errorMessage = INVALID_PARAMETER_ERROR + ": " + exp.getMessage();
-//
-//        logger.error(errorMessage, exp);
-//        response.sendError(SC_BAD_REQUEST, errorMessage);
-//    }
 
 }

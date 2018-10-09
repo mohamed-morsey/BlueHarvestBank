@@ -58,6 +58,13 @@ public class AccountService implements CrudService<Account> {
     @Transactional(rollbackFor = TransactionalOperationException.class)
     public Optional<Account> create(Account account) {
         checkNotNull(account, ACCOUNT_NULL_ERROR);
+
+        Optional<Customer> customerOptional = customerService.get(account.getCustomer().getId());
+        if (!customerOptional.isPresent()) {
+            logger.warn(CUSTOMER_NOT_FOUND_ERROR);
+            return Optional.empty();
+        }
+
         return Optional.ofNullable(createAccountWithTransaction(account));
     }
 
@@ -65,7 +72,7 @@ public class AccountService implements CrudService<Account> {
     public boolean update(Account account) {
         checkNotNull(account, ACCOUNT_NULL_ERROR);
 
-        if (accountRepository.findById(account.getId()) == null) {
+        if (!accountRepository.existsById(account.getId())) {
             logger.warn(ACCOUNT_NOT_FOUND_ERROR);
             return false;
         }
@@ -85,7 +92,7 @@ public class AccountService implements CrudService<Account> {
     public boolean delete(Long id) {
         checkNotNull(id, BLANK_INVALID_ID_ERROR);
 
-        if (accountRepository.findById(id) == null) {
+        if (!accountRepository.existsById(id)) {
             logger.warn(ACCOUNT_NOT_FOUND_ERROR);
             return false;
         }

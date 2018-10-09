@@ -55,7 +55,7 @@ public class CustomerService implements CrudService<Customer> {
     public boolean update(Customer customer) {
         checkNotNull(customer, CUSTOMER_NULL_ERROR);
 
-        if (customerRepository.findById(customer.getId()) == null) {
+        if (!customerRepository.existsById(customer.getId())) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
             return false;
         }
@@ -68,7 +68,7 @@ public class CustomerService implements CrudService<Customer> {
     public boolean delete(Long id) {
         checkNotNull(id, BLANK_INVALID_ID_ERROR);
 
-        if (customerRepository.findById(id) == null) {
+        if (!customerRepository.existsById(id)) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
             return false;
         }
@@ -76,4 +76,5 @@ public class CustomerService implements CrudService<Customer> {
         customerRepository.delete(id);
         return true;
     }
+
 }

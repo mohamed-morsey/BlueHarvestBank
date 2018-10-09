@@ -1,5 +1,6 @@
 package io.blueharvest.bank.service;
 
+import com.google.common.collect.ImmutableList;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.repository.CustomerRepository;
 import org.apache.log4j.Logger;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test class for {@link CustomerService}
  *
- * @author Mohamed Morsey (mohamedmorsey@semmtech.nl)
+ * @author Mohamed Morsey
  * Date: 2018-10-08
  **/
 @RunWith(MockitoJUnitRunner.class)
@@ -29,10 +31,15 @@ public class CustomerServiceTest {
     private static final String SURNAME = "Smith";
     private static final String ADDRESS = "Amsterdam";
     private static final String POSTCODE = "1234AB";
+    private static final String MODIFIED_POSTCODE = "6789XY"; // Used for updating customer details
+
+    private static final int COUNT_OF_CUSTOMERS = 1;
     //endregion
 
-    @Mock private Logger logger;
-    @Mock private CustomerRepository customerRepository;
+    @Mock
+    private Logger logger;
+    @Mock
+    private CustomerRepository customerRepository;
 
     @InjectMocks
     private CustomerService customerService;
@@ -62,6 +69,14 @@ public class CustomerServiceTest {
     }
 
     /**
+     * Tests {@link CustomerService#get(Long)} but for NULL ID
+     */
+    @Test(expected = NullPointerException.class)
+    public void testGetForNullId() {
+        customerService.get(null);
+    }
+
+    /**
      * Tests {@link CustomerService#get(Long)} but for a nonexistent one
      */
     @Test
@@ -74,26 +89,107 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#get(Long)} but with NULL ID
+     * Tests {@link CustomerService#getAll()}}
+     */
+    @Test
+    public void testGetAll() {
+        when(customerRepository.findAll()).thenReturn(ImmutableList.of(testCustomer));
+
+        List<Customer> customers = customerService.getAll();
+
+        assertThat(customers).isNotEmpty();
+        assertThat(customers).hasSize(COUNT_OF_CUSTOMERS);
+    }
+
+    /**
+     * Tests {@link CustomerService#create(Customer)}}
+     */
+    @Test
+    public void testCreate() {
+        when(customerRepository.save(testCustomer)).thenReturn(testCustomer);
+
+        Optional<Customer> createdCustomerOptional = customerService.create(testCustomer);
+
+        assertThat(createdCustomerOptional).isPresent();
+        assertThat(createdCustomerOptional).hasValueSatisfying(
+                customer -> {
+                    assertThat(customer.getName()).isEqualTo(NAME);
+                    assertThat(customer.getSurname()).isEqualTo(SURNAME);
+                });
+    }
+
+    /**
+     * Tests {@link CustomerService#create(Customer)}} but for null customer
      */
     @Test(expected = NullPointerException.class)
-    public void testGetForNullId() {
-        customerService.get(null);
+    public void testCreateForNullCustomer() {
+        customerService.create(null);
     }
 
+    /**
+     * Tests {@link CustomerService#update(Customer)}
+     */
     @Test
-    public void getAll() {
+    public void testUpdate() {
+        testCustomer.setPostcode(MODIFIED_POSTCODE);
+        when(customerRepository.existsById(ID)).thenReturn(true);
+        when(customerRepository.save(testCustomer)).thenReturn(testCustomer);
+
+        boolean updateSuccessful = customerService.update(testCustomer);
+
+        assertThat(updateSuccessful).isTrue();
     }
 
-    @Test
-    public void create() {
+    /**
+     * Tests {@link CustomerService#update(Customer)} but for null customer
+     */
+    @Test(expected = NullPointerException.class)
+    public void testUpdateForNullCustomer() {
+        customerService.update(null);
     }
 
+    /**
+     * Tests {@link CustomerService#update(Customer)} for a nonexistent customer
+     */
     @Test
-    public void update() {
+    public void testUpdateForNonexistentCustomer() {
+        when(customerRepository.save(testCustomer)).thenReturn(testCustomer);
+        when(customerRepository.existsById(ID)).thenReturn(false);
+
+        boolean updateSuccessful = customerService.update(testCustomer);
+
+        assertThat(updateSuccessful).isFalse();
     }
 
+    /**
+     * Tests {@link CustomerService#delete(Long)}
+     */
     @Test
-    public void delete() {
+    public void testDelete() {
+        when(customerRepository.existsById(ID)).thenReturn(true);
+
+        boolean updateSuccessful = customerService.delete(ID);
+
+        assertThat(updateSuccessful).isTrue();
+    }
+
+    /**
+     * Tests {@link CustomerService#delete(Long)} but for null ID
+     */
+    @Test(expected = NullPointerException.class)
+    public void testDeleteForNullId() {
+        customerService.delete(null);
+    }
+
+    /**
+     * Tests {@link CustomerService#delete(Long)}
+     */
+    @Test
+    public void testDeleteForNonexistentCustomer() {
+        when(customerRepository.existsById(ID)).thenReturn(false);
+
+        boolean updateSuccessful = customerService.delete(ID);
+
+        assertThat(updateSuccessful).isFalse();
     }
 }

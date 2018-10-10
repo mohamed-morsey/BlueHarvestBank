@@ -92,7 +92,7 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#get(long)} but for a nonexistent one
+     * Tests {@link AccountService#get(long)} but for a nonexistent account
      */
     @Test
     public void testGetForNonexistentAccount() {
@@ -260,10 +260,10 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#getAccountsForCustomer(long)} but for negative customer ID
+     * Tests {@link AccountService#getAccountsForCustomer(long)} but with negative customer ID
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testGetAccountsForCustomerNegativeCustomerId() {
+    public void testGetAccountsForCustomerWithNegativeCustomerId() {
         accountService.getAccountsForCustomer(-1);
     }
 

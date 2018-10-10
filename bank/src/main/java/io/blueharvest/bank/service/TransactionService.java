@@ -51,19 +51,6 @@ public class TransactionService {
     }
 
     /**
-     * Returns a list of all transaction of a specific account
-     *
-     * @param accountId The ID of the {@link Account}
-     * @return List of all transactions belonging to the specified account if any exists, otherwise an empty list
-     */
-    public List<Transaction> getTransactionsForAccount(long accountId) {
-        checkArgument(accountId > 0, INVALID_ID_ERROR);
-
-        Account accountToFind = new Account(accountId); // The account whose transactions should be returned
-        return transactionRepository.findByAccount(accountToFind);
-    }
-
-    /**
      * Creates a new transaction
      *
      * @param transaction The transaction object to be created
@@ -75,4 +62,16 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
+    /**
+     * Returns a list of all transaction of a specific account
+     *
+     * @param accountId The ID of the {@link Account}
+     * @return List of all transactions belonging to the specified account if any exists, otherwise an empty list
+     */
+    public List<Transaction> getTransactionsForAccount(long accountId) {
+        checkArgument(accountId > 0, INVALID_ID_ERROR);
+
+        Account accountToFind = new Account(accountId); // The account whose transactions should be returned
+        return transactionRepository.findByAccount(accountToFind);
+    }
 }

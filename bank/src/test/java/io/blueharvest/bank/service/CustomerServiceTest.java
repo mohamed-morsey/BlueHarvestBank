@@ -77,7 +77,7 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#get(long)} but for a nonexistent one
+     * Tests {@link CustomerService#get(long)} but for a nonexistent customer
      */
     @Test
     public void testGetForNonexistentCustomer() {

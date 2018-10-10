@@ -78,7 +78,6 @@ public class AccountService implements CrudService<Account> {
             return false;
         }
 
-        // TODO: check that part
         Optional<Customer> customerOptional = customerService.get(account.getCustomer().getId());
         if (!customerOptional.isPresent()) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);

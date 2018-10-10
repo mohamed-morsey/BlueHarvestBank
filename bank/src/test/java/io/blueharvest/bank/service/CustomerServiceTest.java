@@ -179,7 +179,7 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#delete(long)}
+     * Tests {@link CustomerService#delete(long)} for a nonexistent customer
      */
     @Test
     public void testDeleteForNonexistentCustomer() {
@@ -189,4 +189,17 @@ public class CustomerServiceTest {
 
         assertThat(updateSuccessful).isFalse();
     }
+
+    /**
+     * Tests {@link CustomerService#exists(long)}
+     */
+    @Test
+    public void testExists() {
+        when(customerRepository.existsById(ID)).thenReturn(true);
+
+        boolean exists = customerService.exists(ID);
+
+        assertThat(exists).isTrue();
+    }
+
 }

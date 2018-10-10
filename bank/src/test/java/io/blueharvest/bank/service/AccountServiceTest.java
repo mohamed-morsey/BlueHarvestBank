@@ -214,6 +214,19 @@ public class AccountServiceTest {
     }
 
     /**
+     * Tests {@link AccountService#update(Account)} but for a nonexistent customer
+     */
+    @Test
+    public void testUpdateForNonexistentCustomer() {
+        when(accountRepository.existsById(ID)).thenReturn(true);
+        when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.empty());
+
+        boolean updateSuccessful = accountService.update(testAccount);
+
+        assertThat(updateSuccessful).isFalse();
+    }
+
+    /**
      * Tests {@link AccountService#delete(long)}
      */
     @Test

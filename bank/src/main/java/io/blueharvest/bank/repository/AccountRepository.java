@@ -13,9 +13,9 @@ import java.util.List;
  * Date: 2018-10-06
  **/
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Account findById(Long id);
+    Account findById(long id);
 
-    boolean existsById(Long id);
+    boolean existsById(long id);
 
     List<Account> findByCustomer(Customer customer);
 }

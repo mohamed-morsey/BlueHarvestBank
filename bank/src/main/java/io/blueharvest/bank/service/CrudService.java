@@ -16,7 +16,7 @@ public interface CrudService<T> {
      * @param id The ID of the item
      * @return The item if exists, {@link Optional#empty()} otherwise
      */
-    Optional<T> get(Long id);
+    Optional<T> get(long id);
 
     /**
      * Get all items
@@ -47,5 +47,5 @@ public interface CrudService<T> {
      * @param id The ID of the item
      * @return True if deletion was successful, false otherwise
      */
-    boolean delete(Long id);
+    boolean delete(long id);
 }

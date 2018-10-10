@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerServiceTest {
     //region field values
-    private static final Long ID = 1L;
+    private static final long ID = 1L;
     private static final String NAME = "John";
     private static final String SURNAME = "Smith";
     private static final String ADDRESS = "Amsterdam";
@@ -52,7 +52,7 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#get(Long)}
+     * Tests {@link CustomerService#get(long)}
      */
     @Test
     public void testGet() {
@@ -69,15 +69,15 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#get(Long)} but for NULL ID
+     * Tests {@link CustomerService#get(long)} but for negative ID
      */
-    @Test(expected = NullPointerException.class)
-    public void testGetForNullId() {
-        customerService.get(null);
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetForNegativeId() {
+        customerService.get(-1);
     }
 
     /**
-     * Tests {@link CustomerService#get(Long)} but for a nonexistent one
+     * Tests {@link CustomerService#get(long)} but for a nonexistent one
      */
     @Test
     public void testGetForNonexistentCustomer() {
@@ -159,7 +159,7 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#delete(Long)}
+     * Tests {@link CustomerService#delete(long)}
      */
     @Test
     public void testDelete() {
@@ -171,15 +171,15 @@ public class CustomerServiceTest {
     }
 
     /**
-     * Tests {@link CustomerService#delete(Long)} but for null ID
+     * Tests {@link CustomerService#delete(long)} but for negative ID
      */
-    @Test(expected = NullPointerException.class)
-    public void testDeleteForNullId() {
-        customerService.delete(null);
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteForNegativeId() {
+        customerService.delete(-1);
     }
 
     /**
-     * Tests {@link CustomerService#delete(Long)}
+     * Tests {@link CustomerService#delete(long)}
      */
     @Test
     public void testDeleteForNonexistentCustomer() {

@@ -9,8 +9,9 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
+import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.TRANSACTION_NULL_ERROR;
 
 /**
@@ -34,8 +35,9 @@ public class TransactionService {
      * @param id The ID of the transaction
      * @return The transaction if exists, {@link Optional#empty()} otherwise
      */
-    public Optional<Transaction> get(Long id) {
-        checkNotNull(id, BLANK_INVALID_ID_ERROR);
+    public Optional<Transaction> get(long id) {
+        checkArgument(id > 0, INVALID_ID_ERROR);
+
         return Optional.ofNullable(transactionRepository.findById(id));
     }
 
@@ -54,8 +56,8 @@ public class TransactionService {
      * @param accountId The ID of the {@link Account}
      * @return List of all transactions belonging to the specified account if any exists, otherwise an empty list
      */
-    public List<Transaction> getTransactionsForAccount(Long accountId) {
-        checkNotNull(accountId, BLANK_INVALID_ID_ERROR);
+    public List<Transaction> getTransactionsForAccount(long accountId) {
+        checkArgument(accountId > 0, INVALID_ID_ERROR);
 
         Account accountToFind = new Account(accountId); // The account whose transactions should be returned
         return transactionRepository.findByAccount(accountToFind);

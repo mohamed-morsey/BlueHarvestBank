@@ -33,10 +33,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
     //region field values
-    private static final Long CUSTOMER_ID = 1L;
-    private static final Long ID = 10L;
+    private static final long CUSTOMER_ID = 1L;
+    private static final long ID = 10L;
     private static final Double CREDIT = 1000.50;
-    private static final Long TRANSACTION_ID = 20L;
+    private static final long TRANSACTION_ID = 20L;
 
     private static final Double MODIFIED_CREDIT = 1500.10; // Used for updating account details
 
@@ -67,7 +67,7 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#get(Long)}
+     * Tests {@link AccountService#get(long)}
      */
     @Test
     public void testGet() {
@@ -84,15 +84,15 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#get(Long)} but for NULL ID
+     * Tests {@link AccountService#get(long)} but for negative ID
      */
-    @Test(expected = NullPointerException.class)
-    public void testGetForNullId() {
-        accountService.get(null);
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetForNegativeId() {
+        accountService.get(-1);
     }
 
     /**
-     * Tests {@link AccountService#get(Long)} but for a nonexistent one
+     * Tests {@link AccountService#get(long)} but for a nonexistent one
      */
     @Test
     public void testGetForNonexistentAccount() {
@@ -144,7 +144,7 @@ public class AccountServiceTest {
      * Tests {@link AccountService#create(Account)} but for a nonexistent customer
      */
     @Test(expected = TransactionalOperationException.class)
-    public void testCreateForNonexistentCustomer(){
+    public void testCreateForNonexistentCustomer() {
         when(customerService.exists(CUSTOMER_ID)).thenReturn(false);
 
         accountService.create(testAccount);
@@ -165,7 +165,7 @@ public class AccountServiceTest {
 
     /**
      * Tests {@link AccountService#create(Account)} but when the transaction fails due to failure to create the transaction
-     *  associated with the account in the database
+     * associated with the account in the database
      */
     @Test(expected = TransactionalOperationException.class)
     public void testCreateForTransactionalFailureWithTransactionCreationFailure() {
@@ -214,7 +214,7 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#delete(Long)}
+     * Tests {@link AccountService#delete(long)}
      */
     @Test
     public void testDelete() {
@@ -226,15 +226,15 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#delete(Long)} but for null ID
+     * Tests {@link AccountService#delete(long)} but for negative ID
      */
-    @Test(expected = NullPointerException.class)
-    public void testDeleteForNullId() {
-        accountService.delete(null);
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteForNegativeId() {
+        accountService.delete(-1);
     }
 
     /**
-     * Tests {@link AccountService#delete(Long)} but for a nonexistent account
+     * Tests {@link AccountService#delete(long)} but for a nonexistent account
      */
     @Test
     public void testDeleteForNonexistentAccount() {
@@ -246,7 +246,7 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#getAccountsForCustomer(Long)}
+     * Tests {@link AccountService#getAccountsForCustomer(long)}
      */
     @Test
     public void testGetAccountsForCustomer() {
@@ -260,15 +260,15 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#getAccountsForCustomer(Long)} but for null customer ID
+     * Tests {@link AccountService#getAccountsForCustomer(long)} but for negative customer ID
      */
-    @Test(expected = NullPointerException.class)
-    public void testGetAccountsForCustomerForNullCustomerId() {
-        accountService.getAccountsForCustomer(null);
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetAccountsForCustomerNegativeCustomerId() {
+        accountService.getAccountsForCustomer(-1);
     }
 
     /**
-     * Tests {@link AccountService#getAccountsForCustomer(Long)} but for a customer with no accounts
+     * Tests {@link AccountService#getAccountsForCustomer(long)} but for a customer with no accounts
      */
     @Test
     public void testDeleteForCustomerWithNoAccounts() {

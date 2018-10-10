@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2018-10-04
  **/
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    Customer findById(Long id);
+    Customer findById(long id);
 
-    boolean existsById(Long id);
+    boolean existsById(long id);
 }

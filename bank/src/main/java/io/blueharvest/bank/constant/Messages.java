@@ -13,7 +13,7 @@ public final class Messages {
     //endregion
 
     //region generic error messages
-    public static final String BLANK_INVALID_ID_ERROR = "Blank or invalid ID";
+    public static final String INVALID_ID_ERROR = "Invalid ID";
     public static final String INVALID_PARAMETER_ERROR = "Invalid parameter value";
     public static final String OBJECT_NOT_FOUND_ERROR = "Object not found";
     public static final String OPERATION_FAILURE_ERROR = "Operation failed";

@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import static io.blueharvest.bank.constant.Fields.ACCOUNT_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
-import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
+import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -54,11 +54,11 @@ public class TransactionController {
 
         // Check if a valid account ID is passed
         if ((StringUtils.isBlank(accountId)) || (!StringUtils.isNumeric(accountId))) {
-            logger.warn(BLANK_INVALID_ID_ERROR);
-            throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
+            logger.warn(INVALID_ID_ERROR);
+            throw new IllegalArgumentException(INVALID_ID_ERROR);
         }
 
-        Long accountIdLong = Long.parseLong(accountId);
+        long accountIdLong = Long.parseLong(accountId);
         getAccount(accountIdLong); // call this just to make sure the account already exists in the system
 
         List<Transaction> accounts = transactionService.getTransactionsForAccount(accountIdLong);
@@ -67,7 +67,7 @@ public class TransactionController {
         return "/" + TRANSACTIONS_CONTEXT_PTAH;
     }
 
-    private Account getAccount(Long accountId) {
+    private Account getAccount(long accountId) {
         Optional<Account> existingAccountOptional = accountService.get(accountId);
         if (!existingAccountOptional.isPresent()) {
             logger.warn(ACCOUNT_NOT_FOUND_ERROR);

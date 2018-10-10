@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 2018-10-07
  **/
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    Transaction findById(Long id);
+    Transaction findById(long id);
 
     List<Transaction> findByAccount(Account account);
 }

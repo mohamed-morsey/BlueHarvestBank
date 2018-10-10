@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  **/
 @Entity
 public class Customer {
-    private Long id;
+    private long id;
     private String name;
     private String surname;
     private String address;
@@ -28,11 +28,11 @@ public class Customer {
         id = 0L;
     }
 
-    public Customer(Long id) {
+    public Customer(long id) {
         this(id, EMPTY, EMPTY, EMPTY, EMPTY);
     }
 
-    public Customer(Long id, String name, String surname, String address, String postcode) {
+    public Customer(long id, String name, String surname, String address, String postcode) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -42,11 +42,11 @@ public class Customer {
 
     @Id
     @GeneratedValue
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -103,12 +103,12 @@ public class Customer {
 
         Customer customer = (Customer) o;
 
-        return id.equals(customer.id);
+        return id == customer.id;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Long.valueOf(id).hashCode();
     }
 
     @Override

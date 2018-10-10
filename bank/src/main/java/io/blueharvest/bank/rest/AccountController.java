@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
-import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
+import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -79,11 +79,11 @@ public class AccountController {
 
         // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
-            logger.warn(BLANK_INVALID_ID_ERROR);
-            throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
+            logger.warn(INVALID_ID_ERROR);
+            throw new IllegalArgumentException(INVALID_ID_ERROR);
         }
 
-        Long customerIdLong = Long.parseLong(customerId);
+        long customerIdLong = Long.parseLong(customerId);
 
         // This account is initialized to enable setting input fields to default values
         Account initializedAccount = new Account();
@@ -102,7 +102,7 @@ public class AccountController {
 
         // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
-            throw new IllegalArgumentException(BLANK_INVALID_ID_ERROR);
+            throw new IllegalArgumentException(INVALID_ID_ERROR);
         }
 
         if (errors.hasErrors()) {
@@ -110,7 +110,7 @@ public class AccountController {
         }
 
         // Get the customer associated with
-        Long customerIdLong = Long.parseLong(customerId);
+        long customerIdLong = Long.parseLong(customerId);
         account.setCustomer(getCustomer(customerIdLong));
 
         accountService.create(account);
@@ -122,7 +122,7 @@ public class AccountController {
         return builder.build().toUriString();
     }
 
-    private Customer getCustomer(Long customerId) {
+    private Customer getCustomer(long customerId) {
         Optional<Customer> existingCustomerOptional = customerService.get(customerId);
         if (!existingCustomerOptional.isPresent()) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);

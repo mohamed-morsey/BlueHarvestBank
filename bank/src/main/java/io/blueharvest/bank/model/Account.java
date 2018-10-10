@@ -18,7 +18,7 @@ import java.util.Set;
  **/
 @Entity
 public class Account {
-    private Long id;
+    private long id;
     private Double credit;
     private Date establishDate;
     private Customer customer;
@@ -28,28 +28,28 @@ public class Account {
         this(0L, 0.0D);
     }
 
-    public Account(Long id) {
+    public Account(long id) {
         this(id, 0.0D);
     }
 
-    public Account(Long id, Double credit) {
+    public Account(long id, Double credit) {
         this.id = id;
         this.credit = credit;
         this.establishDate = new Date();
     }
 
-    public Account(Long id, Double credit, Customer customer) {
+    public Account(long id, Double credit, Customer customer) {
         this(id, credit);
         this.customer = customer;
     }
 
     @Id
     @GeneratedValue
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -100,12 +100,12 @@ public class Account {
 
         Account account = (Account) o;
 
-        return id.equals(account.id);
+        return id == account.id;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Long.valueOf(id).hashCode();
     }
 
     @Override

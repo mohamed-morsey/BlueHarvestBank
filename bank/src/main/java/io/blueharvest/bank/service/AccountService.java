@@ -14,13 +14,13 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATION_FAILED_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NULL_ERROR;
-import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
-import static io.blueharvest.bank.constant.Messages.TRANSACTION_CREATION_FAILED_ERROR;
+import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 
 /**
  * A service that supports managing bank accounts
@@ -45,8 +45,8 @@ public class AccountService implements CrudService<Account> {
     }
 
     @Override
-    public Optional<Account> get(Long id) {
-        checkNotNull(id, BLANK_INVALID_ID_ERROR);
+    public Optional<Account> get(long id) {
+        checkArgument(id > 0, INVALID_ID_ERROR);
         return Optional.ofNullable(accountRepository.findById(id));
     }
 
@@ -91,8 +91,8 @@ public class AccountService implements CrudService<Account> {
     }
 
     @Override
-    public boolean delete(Long id) {
-        checkNotNull(id, BLANK_INVALID_ID_ERROR);
+    public boolean delete(long id) {
+        checkArgument(id > 0, INVALID_ID_ERROR);
 
         if (!accountRepository.existsById(id)) {
             logger.warn(ACCOUNT_NOT_FOUND_ERROR);
@@ -109,8 +109,8 @@ public class AccountService implements CrudService<Account> {
      * @param customerId The ID of the {@link Customer}
      * @return List of all accounts belonging to the specified customer if any exists, otherwise an empty list
      */
-    public List<Account> getAccountsForCustomer(Long customerId) {
-        checkNotNull(customerId, BLANK_INVALID_ID_ERROR);
+    public List<Account> getAccountsForCustomer(long customerId) {
+        checkArgument(customerId > 0, INVALID_ID_ERROR);
 
         Customer customerToFind = new Customer(customerId); // The customer whose accounts should be returned
         return accountRepository.findByCustomer(customerToFind);
@@ -133,7 +133,7 @@ public class AccountService implements CrudService<Account> {
             // Store the transaction
             transactionService.create(initialTransaction);
             return insertedAccount;
-        } catch (DataAccessException exp){ // This exception is thrown in case of any of the save operations fails
+        } catch (DataAccessException exp) { // This exception is thrown in case of any of the save operations fails
             logger.warn(ACCOUNT_CREATION_FAILED_ERROR);
             throw new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR, exp);
         }

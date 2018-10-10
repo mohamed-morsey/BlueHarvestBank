@@ -15,7 +15,7 @@ import java.util.Date;
  **/
 @Entity
 public class Transaction {
-    private Long id;
+    private long id;
     private Double amount;
     private Date transactionTime;
     private Account account;
@@ -24,24 +24,24 @@ public class Transaction {
         this(0L, 0.0D);
     }
 
-    public Transaction(Long id, Double amount) {
+    public Transaction(long id, Double amount) {
         this.id = id;
         this.amount = amount;
         this.transactionTime = new Date();
     }
 
-    public Transaction(Long id, Double amount, Account account) {
+    public Transaction(long id, Double amount, Account account) {
         this(id, amount);
         this.account = account;
     }
 
     @Id
     @GeneratedValue
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -83,12 +83,12 @@ public class Transaction {
 
         Transaction transaction = (Transaction) o;
 
-        return id.equals(transaction.id);
+        return id == transaction.id;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Long.valueOf(id).hashCode();
     }
 
     @Override

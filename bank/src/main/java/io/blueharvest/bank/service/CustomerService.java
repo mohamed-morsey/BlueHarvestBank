@@ -9,10 +9,11 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NULL_ERROR;
+import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 
 /**
  * A service that supports managing bank customers
@@ -33,8 +34,8 @@ public class CustomerService implements CrudService<Customer> {
     }
 
     @Override
-    public Optional<Customer> get(Long id) {
-        checkNotNull(id, BLANK_INVALID_ID_ERROR);
+    public Optional<Customer> get(long id) {
+        checkArgument(id > 0, INVALID_ID_ERROR);
         return Optional.ofNullable(customerRepository.findById(id));
     }
 
@@ -63,8 +64,8 @@ public class CustomerService implements CrudService<Customer> {
     }
 
     @Override
-    public boolean delete(Long id) {
-        checkNotNull(id, BLANK_INVALID_ID_ERROR);
+    public boolean delete(long id) {
+        checkArgument(id > 0, INVALID_ID_ERROR);
 
         if (!customerRepository.existsById(id)) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
@@ -77,10 +78,11 @@ public class CustomerService implements CrudService<Customer> {
 
     /**
      * Checks if a customer with the given ID exists in the system
+     *
      * @param id The ID of the customer
      * @return True if the customer exists, false otherwise
      */
-    public boolean exists(Long id){
+    public boolean exists(long id) {
         return customerRepository.existsById(id);
     }
 

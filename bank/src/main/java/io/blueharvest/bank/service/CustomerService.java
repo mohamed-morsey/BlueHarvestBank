@@ -44,11 +44,9 @@ public class CustomerService implements CrudService<Customer> {
     }
 
     @Override
-    public Optional<Customer> create(Customer customer) {
+    public Customer create(Customer customer) {
         checkNotNull(customer, CUSTOMER_NULL_ERROR);
-
-        Customer insertedCustomer = customerRepository.save(customer);
-        return Optional.ofNullable(insertedCustomer);
+        return customerRepository.save(customer);
     }
 
     @Override
@@ -75,6 +73,15 @@ public class CustomerService implements CrudService<Customer> {
 
         customerRepository.delete(id);
         return true;
+    }
+
+    /**
+     * Checks if a customer with the given ID exists in the system
+     * @param id The ID of the customer
+     * @return True if the customer exists, false otherwise
+     */
+    public boolean exists(Long id){
+        return customerRepository.existsById(id);
     }
 
 }

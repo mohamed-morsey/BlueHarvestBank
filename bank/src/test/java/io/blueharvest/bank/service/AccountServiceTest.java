@@ -1,6 +1,7 @@
 package io.blueharvest.bank.service;
 
 import com.google.common.collect.ImmutableList;
+import io.blueharvest.bank.error.TransactionalOperationException;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
@@ -12,10 +13,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
 import java.util.Optional;
 
+import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATION_FAILED_ERROR;
+import static io.blueharvest.bank.constant.Messages.TRANSACTION_CREATION_FAILED_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -117,26 +121,60 @@ public class AccountServiceTest {
      */
     @Test
     public void testCreate() {
+        when(customerService.exists(CUSTOMER_ID)).thenReturn(true);
         when(accountRepository.save(testAccount)).thenReturn(testAccount);
-        when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.of(testCustomer));
-        when(transactionService.create(any(Transaction.class))).thenReturn(Optional.of(testTransaction));
+        when(transactionService.create(any(Transaction.class))).thenReturn(testTransaction);
 
-        Optional<Account> createdAccountOptional = accountService.create(testAccount);
+        Account createdAccount = accountService.create(testAccount);
 
-        assertThat(createdAccountOptional).isPresent();
-        assertThat(createdAccountOptional).hasValueSatisfying(
-                account -> {
-                    assertThat(account.getId()).isEqualTo(ID);
-                    assertThat(account.getCredit()).isEqualTo(CREDIT);
-                });
+        assertThat(createdAccount).isNotNull();
+        assertThat(createdAccount.getId()).isEqualTo(ID);
+        assertThat(createdAccount.getCredit()).isEqualTo(CREDIT);
     }
 
     /**
-     * Tests {@link AccountService#create(Account)} but for null customer
+     * Tests {@link AccountService#create(Account)} but for null account
      */
     @Test(expected = NullPointerException.class)
-    public void testCreateForNullCustomer() {
+    public void testCreateForNullAccount() {
         accountService.create(null);
+    }
+
+    /**
+     * Tests {@link AccountService#create(Account)} but for a nonexistent customer
+     */
+    @Test(expected = TransactionalOperationException.class)
+    public void testCreateForNonexistentCustomer(){
+        when(customerService.exists(CUSTOMER_ID)).thenReturn(false);
+
+        accountService.create(testAccount);
+    }
+
+    /**
+     * Tests {@link AccountService#create(Account)} but when the transaction fails due to failure to create the account
+     * in the database
+     */
+    @Test(expected = TransactionalOperationException.class)
+    public void testCreateForTransactionalFailureWithAccountCreationFailure() {
+        when(customerService.exists(CUSTOMER_ID)).thenReturn(true);
+        when(accountRepository.save(testAccount)).
+                thenThrow(new EmptyResultDataAccessException(ACCOUNT_CREATION_FAILED_ERROR, 1));
+
+        accountService.create(testAccount);
+    }
+
+    /**
+     * Tests {@link AccountService#create(Account)} but when the transaction fails due to failure to create the transaction
+     *  associated with the account in the database
+     */
+    @Test(expected = TransactionalOperationException.class)
+    public void testCreateForTransactionalFailureWithTransactionCreationFailure() {
+        when(customerService.exists(CUSTOMER_ID)).thenReturn(true);
+        when(accountRepository.save(testAccount)).thenReturn(testAccount);
+        when(transactionService.create(any(Transaction.class)))
+                .thenThrow(new EmptyResultDataAccessException(TRANSACTION_CREATION_FAILED_ERROR, 1));
+
+        accountService.create(testAccount);
     }
 
     /**
@@ -163,7 +201,7 @@ public class AccountServiceTest {
     }
 
     /**
-     * Tests {@link AccountService#update(Account)} for a nonexistent account
+     * Tests {@link AccountService#update(Account)} but for a nonexistent account
      */
     @Test
     public void testUpdateForNonexistentAccount() {
@@ -175,11 +213,69 @@ public class AccountServiceTest {
         assertThat(updateSuccessful).isFalse();
     }
 
+    /**
+     * Tests {@link AccountService#delete(Long)}
+     */
     @Test
-    public void delete() {
+    public void testDelete() {
+        when(accountRepository.existsById(ID)).thenReturn(true);
+
+        boolean updateSuccessful = accountService.delete(ID);
+
+        assertThat(updateSuccessful).isTrue();
     }
 
+    /**
+     * Tests {@link AccountService#delete(Long)} but for null ID
+     */
+    @Test(expected = NullPointerException.class)
+    public void testDeleteForNullId() {
+        accountService.delete(null);
+    }
+
+    /**
+     * Tests {@link AccountService#delete(Long)} but for a nonexistent account
+     */
     @Test
-    public void getAccountsForCustomer() {
+    public void testDeleteForNonexistentAccount() {
+        when(accountRepository.existsById(ID)).thenReturn(false);
+
+        boolean updateSuccessful = accountService.delete(ID);
+
+        assertThat(updateSuccessful).isFalse();
+    }
+
+    /**
+     * Tests {@link AccountService#getAccountsForCustomer(Long)}
+     */
+    @Test
+    public void testGetAccountsForCustomer() {
+        when(accountRepository.findByCustomer(testCustomer)).thenReturn(ImmutableList.of(testAccount));
+
+        List<Account> accountsFoCustomer = accountService.getAccountsForCustomer(CUSTOMER_ID);
+
+        assertThat(accountsFoCustomer).isNotEmpty();
+        assertThat(accountsFoCustomer).hasSize(COUNT_OF_ACCOUNTS);
+        assertThat(accountsFoCustomer.get(0)).isEqualTo(testAccount);
+    }
+
+    /**
+     * Tests {@link AccountService#getAccountsForCustomer(Long)} but for null customer ID
+     */
+    @Test(expected = NullPointerException.class)
+    public void testGetAccountsForCustomerForNullCustomerId() {
+        accountService.getAccountsForCustomer(null);
+    }
+
+    /**
+     * Tests {@link AccountService#getAccountsForCustomer(Long)} but for a customer with no accounts
+     */
+    @Test
+    public void testDeleteForCustomerWithNoAccounts() {
+        when(accountRepository.findByCustomer(testCustomer)).thenReturn(ImmutableList.of());
+
+        List<Account> accountsFoCustomer = accountService.getAccountsForCustomer(CUSTOMER_ID);
+
+        assertThat(accountsFoCustomer).isEmpty();
     }
 }

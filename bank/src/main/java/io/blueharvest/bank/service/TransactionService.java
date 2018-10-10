@@ -54,7 +54,7 @@ public class TransactionService {
      * @param accountId The ID of the {@link Account}
      * @return List of all transactions belonging to the specified account if any exists, otherwise an empty list
      */
-    public List<Transaction> getAccountsForCustomer(Long accountId) {
+    public List<Transaction> getTransactionsForAccount(Long accountId) {
         checkNotNull(accountId, BLANK_INVALID_ID_ERROR);
 
         Account accountToFind = new Account(accountId); // The account whose transactions should be returned
@@ -67,11 +67,10 @@ public class TransactionService {
      * @param transaction The transaction object to be created
      * @return True if creation was successful, false otherwise
      */
-    public Optional<Transaction> create(Transaction transaction) {
+    public Transaction create(Transaction transaction) {
         checkNotNull(transaction, TRANSACTION_NULL_ERROR);
 
-        Transaction insertedTransaction = transactionRepository.save(transaction);
-        return Optional.ofNullable(insertedTransaction);
+        return transactionRepository.save(transaction);
     }
 
 }

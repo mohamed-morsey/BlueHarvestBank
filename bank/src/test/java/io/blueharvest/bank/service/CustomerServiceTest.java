@@ -108,14 +108,11 @@ public class CustomerServiceTest {
     public void testCreate() {
         when(customerRepository.save(testCustomer)).thenReturn(testCustomer);
 
-        Optional<Customer> createdCustomerOptional = customerService.create(testCustomer);
+        Customer createdCustomer = customerService.create(testCustomer);
 
-        assertThat(createdCustomerOptional).isPresent();
-        assertThat(createdCustomerOptional).hasValueSatisfying(
-                customer -> {
-                    assertThat(customer.getName()).isEqualTo(NAME);
-                    assertThat(customer.getSurname()).isEqualTo(SURNAME);
-                });
+        assertThat(createdCustomer).isNotNull();
+        assertThat(createdCustomer.getName()).isEqualTo(NAME);
+        assertThat(createdCustomer.getSurname()).isEqualTo(SURNAME);
     }
 
     /**

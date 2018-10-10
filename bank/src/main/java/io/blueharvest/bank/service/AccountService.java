@@ -6,6 +6,7 @@ import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.repository.AccountRepository;
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,16 +57,16 @@ public class AccountService implements CrudService<Account> {
 
     @Override
     @Transactional(rollbackFor = TransactionalOperationException.class)
-    public Optional<Account> create(Account account) {
+    public Account create(Account account) {
         checkNotNull(account, ACCOUNT_NULL_ERROR);
 
-        Optional<Customer> customerOptional = customerService.get(account.getCustomer().getId());
-        if (!customerOptional.isPresent()) {
+        boolean customerExists = customerService.exists(account.getCustomer().getId());
+        if (!customerExists) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
-            return Optional.empty();
+            throw new TransactionalOperationException(CUSTOMER_NOT_FOUND_ERROR);
         }
 
-        return Optional.ofNullable(createAccountWithTransaction(account));
+        return createAccountWithTransaction(account);
     }
 
     @Override
@@ -77,6 +78,7 @@ public class AccountService implements CrudService<Account> {
             return false;
         }
 
+        // TODO: check that part
         Optional<Customer> customerOptional = customerService.get(account.getCustomer().getId());
         if (!customerOptional.isPresent()) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
@@ -120,25 +122,20 @@ public class AccountService implements CrudService<Account> {
      * @param account The account to be created
      */
     private Account createAccountWithTransaction(Account account) {
-        Account insertedAccount = accountRepository.save(account);
+        try {
+            Account insertedAccount = accountRepository.save(account);
 
-        // Create transaction associated with that account with the initial credit
-        if (insertedAccount == null) {
-            logger.error(ACCOUNT_CREATION_FAILED_ERROR);
-            throw new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR);
+            // Create a transaction associated with that account with the initail credit
+            Transaction initialTransaction = new Transaction();
+            initialTransaction.setAccount(insertedAccount);
+            initialTransaction.setAmount(account.getCredit());
+
+            // Store the transaction
+            transactionService.create(initialTransaction);
+            return insertedAccount;
+        } catch (DataAccessException exp){ // This exception is thrown in case of any of the save operations fails
+            logger.warn(ACCOUNT_CREATION_FAILED_ERROR);
+            throw new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR, exp);
         }
-
-        // Create a transaction associated with that account
-        Transaction initialTransaction = new Transaction();
-        initialTransaction.setAccount(insertedAccount);
-        initialTransaction.setAmount(account.getCredit());
-        Optional<Transaction> insertedTransactionOptional = transactionService.create(initialTransaction);
-
-        if (!insertedTransactionOptional.isPresent()) {
-            logger.error(TRANSACTION_CREATION_FAILED_ERROR);
-            throw new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR);
-        }
-
-        return insertedAccount;
     }
 }

@@ -61,7 +61,7 @@ public class TransactionController {
         Long accountIdLong = Long.parseLong(accountId);
         getAccount(accountIdLong); // call this just to make sure the account already exists in the system
 
-        List<Transaction> accounts = transactionService.getAccountsForCustomer(accountIdLong);
+        List<Transaction> accounts = transactionService.getTransactionsForAccount(accountIdLong);
         model.addAttribute(TRANSACTIONS_ATTRIBUTE_NAME, accounts);
 
         return "/" + TRANSACTIONS_CONTEXT_PTAH;

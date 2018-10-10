@@ -29,9 +29,9 @@ public interface CrudService<T> {
      * Creates a new item and adds it to the system
      *
      * @param item The item to be created
-     * @return True if addition was successful, false otherwise
+     * @return The newly created item
      */
-    Optional<T> create(T item);
+    T create(T item);
 
     /**
      * Updates an existing item

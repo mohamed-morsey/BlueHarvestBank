@@ -3,8 +3,8 @@ package io.blueharvest.bank.error;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
  * @author Mohamed Morsey
  * Date: 2018-10-07
  */
-@RestControllerAdvice
+@ControllerAdvice
 public class BankExceptionHandler {
     private final Log logger = LogFactory.getLog(this.getClass());
 

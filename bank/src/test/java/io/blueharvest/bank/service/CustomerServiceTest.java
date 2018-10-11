@@ -14,6 +14,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Optional;
 
+import static io.blueharvest.bank.constant.FieldValues.ADDRESS;
+import static io.blueharvest.bank.constant.FieldValues.COUNT_OF_CUSTOMERS;
+import static io.blueharvest.bank.constant.FieldValues.CUSTOMER_ID;
+import static io.blueharvest.bank.constant.FieldValues.MODIFIED_POSTCODE;
+import static io.blueharvest.bank.constant.FieldValues.NAME;
+import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
+import static io.blueharvest.bank.constant.FieldValues.SURNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -25,17 +32,6 @@ import static org.mockito.Mockito.when;
  **/
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerServiceTest {
-    //region field values
-    private static final long ID = 1L;
-    private static final String NAME = "John";
-    private static final String SURNAME = "Smith";
-    private static final String ADDRESS = "Amsterdam";
-    private static final String POSTCODE = "1234AB";
-    private static final String MODIFIED_POSTCODE = "6789XY"; // Used for updating customer details
-
-    private static final int COUNT_OF_CUSTOMERS = 1;
-    //endregion
-
     @Mock
     private Logger logger;
     @Mock
@@ -48,7 +44,7 @@ public class CustomerServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        testCustomer = new Customer(ID, NAME, SURNAME, ADDRESS, POSTCODE);
+        testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
     }
 
     /**
@@ -56,9 +52,9 @@ public class CustomerServiceTest {
      */
     @Test
     public void testGet() {
-        when(customerRepository.findById(ID)).thenReturn(testCustomer);
+        when(customerRepository.findById(CUSTOMER_ID)).thenReturn(testCustomer);
 
-        Optional<Customer> desiredCustomerOptional = customerService.get(ID);
+        Optional<Customer> desiredCustomerOptional = customerService.get(CUSTOMER_ID);
 
         assertThat(desiredCustomerOptional).isPresent();
         assertThat(desiredCustomerOptional).hasValueSatisfying(
@@ -81,9 +77,9 @@ public class CustomerServiceTest {
      */
     @Test
     public void testGetForNonexistentCustomer() {
-        when(customerRepository.findById(ID)).thenReturn(null);
+        when(customerRepository.findById(CUSTOMER_ID)).thenReturn(null);
 
-        Optional<Customer> desiredCustomerOptional = customerService.get(ID);
+        Optional<Customer> desiredCustomerOptional = customerService.get(CUSTOMER_ID);
 
         assertThat(desiredCustomerOptional).isEmpty();
     }
@@ -129,7 +125,7 @@ public class CustomerServiceTest {
     @Test
     public void testUpdate() {
         testCustomer.setPostcode(MODIFIED_POSTCODE);
-        when(customerRepository.existsById(ID)).thenReturn(true);
+        when(customerRepository.existsById(CUSTOMER_ID)).thenReturn(true);
         when(customerRepository.save(testCustomer)).thenReturn(testCustomer);
 
         boolean updateSuccessful = customerService.update(testCustomer);
@@ -151,7 +147,7 @@ public class CustomerServiceTest {
     @Test
     public void testUpdateForNonexistentCustomer() {
         when(customerRepository.save(testCustomer)).thenReturn(testCustomer);
-        when(customerRepository.existsById(ID)).thenReturn(false);
+        when(customerRepository.existsById(CUSTOMER_ID)).thenReturn(false);
 
         boolean updateSuccessful = customerService.update(testCustomer);
 
@@ -163,9 +159,9 @@ public class CustomerServiceTest {
      */
     @Test
     public void testDelete() {
-        when(customerRepository.existsById(ID)).thenReturn(true);
+        when(customerRepository.existsById(CUSTOMER_ID)).thenReturn(true);
 
-        boolean updateSuccessful = customerService.delete(ID);
+        boolean updateSuccessful = customerService.delete(CUSTOMER_ID);
 
         assertThat(updateSuccessful).isTrue();
     }
@@ -183,9 +179,9 @@ public class CustomerServiceTest {
      */
     @Test
     public void testDeleteForNonexistentCustomer() {
-        when(customerRepository.existsById(ID)).thenReturn(false);
+        when(customerRepository.existsById(CUSTOMER_ID)).thenReturn(false);
 
-        boolean updateSuccessful = customerService.delete(ID);
+        boolean updateSuccessful = customerService.delete(CUSTOMER_ID);
 
         assertThat(updateSuccessful).isFalse();
     }
@@ -195,9 +191,9 @@ public class CustomerServiceTest {
      */
     @Test
     public void testExists() {
-        when(customerRepository.existsById(ID)).thenReturn(true);
+        when(customerRepository.existsById(CUSTOMER_ID)).thenReturn(true);
 
-        boolean exists = customerService.exists(ID);
+        boolean exists = customerService.exists(CUSTOMER_ID);
 
         assertThat(exists).isTrue();
     }

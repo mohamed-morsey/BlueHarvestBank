@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + TRANSACTIONS_CONTEXT_PTAH)
 public class TransactionController {
-    public static final String TRANSACTIONS_ATTRIBUTE_NAME = "transactions";
+    private static final String TRANSACTIONS_ATTRIBUTE_NAME = "transactions";
 
     private TransactionService transactionService;
     private AccountService accountService;

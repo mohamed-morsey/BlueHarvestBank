@@ -11,6 +11,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -18,19 +19,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
-import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
+import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -43,8 +42,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + ACCOUNTS_CONTEXT_PTAH)
 public class AccountController {
-    public static final String ACCOUNT_ATTRIBUTE_NAME = "account";
-    public static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
+    private static final String ACCOUNT_ATTRIBUTE_NAME = "account";
+    private static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
 
     private AccountService accountService;
     private AccountValidator accountValidator;
@@ -66,7 +65,6 @@ public class AccountController {
     }
 
     @GetMapping(path = "/list", name = "getAccounts")
-    @ResponseStatus()
     public String getAccounts(Model model) {
         List<Account> accounts = accountService.getAll();
         model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
@@ -98,7 +96,7 @@ public class AccountController {
 
     @PostMapping(name = "createAccount")
     public String createAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
-                                @Valid @ModelAttribute Account account, Errors errors) {
+                                @Validated @ModelAttribute Account account, Errors errors) {
 
         // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {

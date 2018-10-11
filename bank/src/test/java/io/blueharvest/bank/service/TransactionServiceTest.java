@@ -15,6 +15,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Optional;
 
+import static io.blueharvest.bank.constant.FieldValues.ACCOUNT_ID;
+import static io.blueharvest.bank.constant.FieldValues.AMOUNT;
+import static io.blueharvest.bank.constant.FieldValues.COUNT_OF_TRANSACTIONS;
+import static io.blueharvest.bank.constant.FieldValues.CREDIT;
+import static io.blueharvest.bank.constant.FieldValues.TRANSACTION_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -26,14 +31,6 @@ import static org.mockito.Mockito.when;
  **/
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionServiceTest {
-    //region field values
-    private static final long ID = 10L;
-    private static final Double AMOUNT = 1000.50D;
-    private static final long ACCOUNT_ID = 1L;
-
-    private static final int COUNT_OF_TRANSACTIONS = 1;
-    //endregion
-
     @Mock
     private Logger logger;
     @Mock
@@ -47,8 +44,8 @@ public class TransactionServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        testAccount = new Account(ACCOUNT_ID);
-        testTransaction = new Transaction(ID, AMOUNT, testAccount);
+        testAccount = new Account(ACCOUNT_ID, CREDIT);
+        testTransaction = new Transaction(TRANSACTION_ID, AMOUNT, testAccount);
     }
 
     /**
@@ -56,14 +53,14 @@ public class TransactionServiceTest {
      */
     @Test
     public void testGet() {
-        when(transactionRepository.findById(ID)).thenReturn(testTransaction);
+        when(transactionRepository.findById(TRANSACTION_ID)).thenReturn(testTransaction);
 
-        Optional<Transaction> desiredTransactionOptional = transactionService.get(ID);
+        Optional<Transaction> desiredTransactionOptional = transactionService.get(TRANSACTION_ID);
 
         assertThat(desiredTransactionOptional).isPresent();
         assertThat(desiredTransactionOptional).hasValueSatisfying(
                 customer -> {
-                    assertThat(customer.getId()).isEqualTo(ID);
+                    assertThat(customer.getId()).isEqualTo(TRANSACTION_ID);
                     assertThat(customer.getAmount()).isEqualTo(AMOUNT);
                 });
     }
@@ -81,9 +78,9 @@ public class TransactionServiceTest {
      */
     @Test
     public void testGetForNonexistentTransaction() {
-        when(transactionRepository.findById(ID)).thenReturn(null);
+        when(transactionRepository.findById(TRANSACTION_ID)).thenReturn(null);
 
-        Optional<Transaction> desiredTransactionOptional = transactionService.get(ID);
+        Optional<Transaction> desiredTransactionOptional = transactionService.get(TRANSACTION_ID);
 
         assertThat(desiredTransactionOptional).isEmpty();
     }
@@ -111,7 +108,7 @@ public class TransactionServiceTest {
         Transaction createdTransaction = transactionService.create(testTransaction);
 
         assertThat(createdTransaction).isNotNull();
-        assertThat(createdTransaction.getId()).isEqualTo(ID);
+        assertThat(createdTransaction.getId()).isEqualTo(TRANSACTION_ID);
         assertThat(createdTransaction.getAmount()).isEqualTo(AMOUNT);
     }
 

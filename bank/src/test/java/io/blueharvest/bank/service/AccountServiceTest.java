@@ -18,6 +18,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.util.List;
 import java.util.Optional;
 
+import static io.blueharvest.bank.constant.FieldValues.ACCOUNT_ID;
+import static io.blueharvest.bank.constant.FieldValues.ADDRESS;
+import static io.blueharvest.bank.constant.FieldValues.COUNT_OF_ACCOUNTS;
+import static io.blueharvest.bank.constant.FieldValues.CREDIT;
+import static io.blueharvest.bank.constant.FieldValues.CUSTOMER_ID;
+import static io.blueharvest.bank.constant.FieldValues.MODIFIED_CREDIT;
+import static io.blueharvest.bank.constant.FieldValues.NAME;
+import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
+import static io.blueharvest.bank.constant.FieldValues.SURNAME;
+import static io.blueharvest.bank.constant.FieldValues.TRANSACTION_ID;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATION_FAILED_ERROR;
 import static io.blueharvest.bank.constant.Messages.TRANSACTION_CREATION_FAILED_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,17 +42,6 @@ import static org.mockito.Mockito.when;
  **/
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
-    //region field values
-    private static final long CUSTOMER_ID = 1L;
-    private static final long ID = 10L;
-    private static final Double CREDIT = 1000.50;
-    private static final long TRANSACTION_ID = 20L;
-
-    private static final Double MODIFIED_CREDIT = 1500.10; // Used for updating account details
-
-    private static final int COUNT_OF_ACCOUNTS = 1;
-    //endregion
-
     @Mock
     private Logger logger;
     @Mock
@@ -61,8 +60,8 @@ public class AccountServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        testCustomer = new Customer(CUSTOMER_ID);
-        testAccount = new Account(ID, CREDIT, testCustomer);
+        testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
+        testAccount = new Account(ACCOUNT_ID, CREDIT, testCustomer);
         testTransaction = new Transaction(TRANSACTION_ID, CREDIT, testAccount);
     }
 
@@ -71,14 +70,14 @@ public class AccountServiceTest {
      */
     @Test
     public void testGet() {
-        when(accountRepository.findById(ID)).thenReturn(testAccount);
+        when(accountRepository.findById(ACCOUNT_ID)).thenReturn(testAccount);
 
-        Optional<Account> desiredAccountOptional = accountService.get(ID);
+        Optional<Account> desiredAccountOptional = accountService.get(ACCOUNT_ID);
 
         assertThat(desiredAccountOptional).isPresent();
         assertThat(desiredAccountOptional).hasValueSatisfying(
                 account -> {
-                    assertThat(account.getId()).isEqualTo(ID);
+                    assertThat(account.getId()).isEqualTo(ACCOUNT_ID);
                     assertThat(account.getCredit()).isEqualTo(CREDIT);
                 });
     }
@@ -96,9 +95,9 @@ public class AccountServiceTest {
      */
     @Test
     public void testGetForNonexistentAccount() {
-        when(accountRepository.findById(ID)).thenReturn(null);
+        when(accountRepository.findById(ACCOUNT_ID)).thenReturn(null);
 
-        Optional<Account> desiredAccountOptional = accountService.get(ID);
+        Optional<Account> desiredAccountOptional = accountService.get(ACCOUNT_ID);
 
         assertThat(desiredAccountOptional).isEmpty();
     }
@@ -128,7 +127,7 @@ public class AccountServiceTest {
         Account createdAccount = accountService.create(testAccount);
 
         assertThat(createdAccount).isNotNull();
-        assertThat(createdAccount.getId()).isEqualTo(ID);
+        assertThat(createdAccount.getId()).isEqualTo(ACCOUNT_ID);
         assertThat(createdAccount.getCredit()).isEqualTo(CREDIT);
     }
 
@@ -183,7 +182,7 @@ public class AccountServiceTest {
     @Test
     public void testUpdate() {
         testAccount.setCredit(MODIFIED_CREDIT);
-        when(accountRepository.existsById(ID)).thenReturn(true);
+        when(accountRepository.existsById(ACCOUNT_ID)).thenReturn(true);
         when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.of(testCustomer));
         when(accountRepository.save(testAccount)).thenReturn(testAccount);
 
@@ -206,7 +205,7 @@ public class AccountServiceTest {
     @Test
     public void testUpdateForNonexistentAccount() {
         when(accountRepository.save(testAccount)).thenReturn(testAccount);
-        when(accountRepository.existsById(ID)).thenReturn(false);
+        when(accountRepository.existsById(ACCOUNT_ID)).thenReturn(false);
 
         boolean updateSuccessful = accountService.update(testAccount);
 
@@ -218,7 +217,7 @@ public class AccountServiceTest {
      */
     @Test
     public void testUpdateForNonexistentCustomer() {
-        when(accountRepository.existsById(ID)).thenReturn(true);
+        when(accountRepository.existsById(ACCOUNT_ID)).thenReturn(true);
         when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.empty());
 
         boolean updateSuccessful = accountService.update(testAccount);
@@ -231,9 +230,9 @@ public class AccountServiceTest {
      */
     @Test
     public void testDelete() {
-        when(accountRepository.existsById(ID)).thenReturn(true);
+        when(accountRepository.existsById(ACCOUNT_ID)).thenReturn(true);
 
-        boolean updateSuccessful = accountService.delete(ID);
+        boolean updateSuccessful = accountService.delete(ACCOUNT_ID);
 
         assertThat(updateSuccessful).isTrue();
     }
@@ -251,9 +250,9 @@ public class AccountServiceTest {
      */
     @Test
     public void testDeleteForNonexistentAccount() {
-        when(accountRepository.existsById(ID)).thenReturn(false);
+        when(accountRepository.existsById(ACCOUNT_ID)).thenReturn(false);
 
-        boolean updateSuccessful = accountService.delete(ID);
+        boolean updateSuccessful = accountService.delete(ACCOUNT_ID);
 
         assertThat(updateSuccessful).isFalse();
     }

@@ -18,8 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletResponse;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +29,6 @@ import static io.blueharvest.bank.constant.Fields.ACCOUNT_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
 import static io.blueharvest.bank.rest.TransactionController.TRANSACTIONS_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -75,6 +72,7 @@ public class TransactionControllerTest {
 
     /**
      * Tests {@link TransactionController#getTransactionForAccount(String, Model)}
+     *
      * @throws Exception
      */
     @Test
@@ -92,6 +90,7 @@ public class TransactionControllerTest {
 
     /**
      * Tests {@link TransactionController#getTransactionForAccount(String, Model)} but with an invalid account ID
+     *
      * @throws Exception
      */
     @Test
@@ -104,6 +103,7 @@ public class TransactionControllerTest {
 
     /**
      * Tests {@link TransactionController#getTransactionForAccount(String, Model)} but for a nonexistent account
+     *
      * @throws Exception
      */
     @Test

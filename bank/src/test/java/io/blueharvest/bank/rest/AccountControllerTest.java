@@ -22,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,6 @@ import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.AccountController.ACCOUNT_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +73,7 @@ public class AccountController {
 
     @GetMapping(name = "getAccountsForCustomer")
     public String getAccountsForCustomer(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
-                             Model model) {
+                                         Model model) {
 
         // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {

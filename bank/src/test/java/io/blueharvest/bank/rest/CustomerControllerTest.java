@@ -12,18 +12,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static io.blueharvest.bank.constant.FieldValues.ADDRESS;
@@ -32,7 +26,6 @@ import static io.blueharvest.bank.constant.FieldValues.NAME;
 import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
 import static io.blueharvest.bank.constant.FieldValues.SURNAME;
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
-import static io.blueharvest.bank.constant.Paths.ERROR_CONTEXT_PATH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
@@ -75,10 +68,11 @@ public class CustomerControllerTest {
 
     /**
      * Tests {@link CustomerController#init(Model)}
+     *
      * @throws Exception
      */
     @Test
-    public void testInit() throws Exception{
+    public void testInit() throws Exception {
         List<Customer> customers = ImmutableList.of(testCustomer);
         when(customerService.getAll()).thenReturn(customers);
 
@@ -92,6 +86,7 @@ public class CustomerControllerTest {
 
     /**
      * Tests {@link CustomerController#listCustomers(Model)}
+     *
      * @throws Exception
      */
     @Test
@@ -107,10 +102,11 @@ public class CustomerControllerTest {
 
     /**
      * Tests {@link CustomerController#createCustomer(Customer, Errors, BindingResult)} with success
+     *
      * @throws Exception
      */
     @Test
-    public void testCreateCustomer() throws Exception{
+    public void testCreateCustomer() throws Exception {
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 
         this.mockMvc.perform(post("/" + CUSTOMERS_CONTEXT_PTAH)
@@ -121,10 +117,11 @@ public class CustomerControllerTest {
 
     /**
      * Tests {@link CustomerController#createCustomer(Customer, Errors, BindingResult)} with failure due to invalid customer details
+     *
      * @throws Exception
      */
     @Test
-    public void testCreateCustomerWithInvalidCustomerDetails() throws Exception{
+    public void testCreateCustomerWithInvalidCustomerDetails() throws Exception {
         testCustomer.setName(EMPTY); // Set customer name to EMPTY so it would be invalid to add it to the system
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 

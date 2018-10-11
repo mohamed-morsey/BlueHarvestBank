@@ -16,7 +16,7 @@ import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_POSTCODE_ERROR
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_SURNAME_ERROR;
 
 /**
- * Validator for {@link io.blueharvest.bank.model.Customer}
+ * Validator for {@link Customer}
  *
  * @author Mohamed Morsey
  * Date: 2018-10-05

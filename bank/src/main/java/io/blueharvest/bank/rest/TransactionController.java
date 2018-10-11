@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + TRANSACTIONS_CONTEXT_PTAH)
 public class TransactionController {
-    private static final String TRANSACTIONS_ATTRIBUTE_NAME = "transactions";
+    static final String TRANSACTIONS_ATTRIBUTE_NAME = "transactions";
 
     private TransactionService transactionService;
     private AccountService accountService;
@@ -49,8 +49,7 @@ public class TransactionController {
     }
 
     @GetMapping(name = "getTransactionsForAccount")
-    public String getAccount(@NotNull @RequestParam(ACCOUNT_ID_PARAMETER) String accountId,
-                             Model model, HttpServletResponse response) {
+    public String getTransactionForAccount(@NotNull @RequestParam(ACCOUNT_ID_PARAMETER) String accountId, Model model) {
 
         // Check if a valid account ID is passed
         if ((StringUtils.isBlank(accountId)) || (!StringUtils.isNumeric(accountId))) {

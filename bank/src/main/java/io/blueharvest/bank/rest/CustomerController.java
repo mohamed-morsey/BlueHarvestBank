@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
+import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 
 /**
  * Controller for {@link Customer}s
@@ -29,8 +30,8 @@ import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 @Controller
 @RequestMapping("/" + CUSTOMERS_CONTEXT_PTAH)
 public class CustomerController {
-    public static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
-    public static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
+    static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
+    static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
 
     private CustomerService customerService;
     private CustomerValidator customerValidator;
@@ -60,8 +61,8 @@ public class CustomerController {
      * @param model
      * @return
      */
-    @GetMapping(path = "/list")
-    public String getCustomers(Model model) {
+    @GetMapping(path = "/" + LIST_CONTEXT_PATH)
+    public String listCustomers(Model model) {
         List<Customer> customers = customerService.getAll();
         model.addAttribute(CUSTOMERS_ATTRIBUTE_NAME, customers);
         return "/" + CUSTOMERS_CONTEXT_PTAH;

@@ -31,6 +31,7 @@ import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
+import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
@@ -42,8 +43,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + ACCOUNTS_CONTEXT_PTAH)
 public class AccountController {
-    private static final String ACCOUNT_ATTRIBUTE_NAME = "account";
-    private static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
+    static final String ACCOUNT_ATTRIBUTE_NAME = "account";
+    static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
 
     private AccountService accountService;
     private AccountValidator accountValidator;
@@ -64,16 +65,16 @@ public class AccountController {
         binder.addValidators(accountValidator);
     }
 
-    @GetMapping(path = "/list", name = "getAccounts")
-    public String getAccounts(Model model) {
+    @GetMapping(path = "/" + LIST_CONTEXT_PATH, name = "getAccounts")
+    public String listAccounts(Model model) {
         List<Account> accounts = accountService.getAll();
         model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);
         return "/" + ACCOUNTS_CONTEXT_PTAH;
     }
 
     @GetMapping(name = "getAccountsForCustomer")
-    public String getAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
-                             Model model, HttpServletResponse response) {
+    public String getAccountsForCustomer(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
+                             Model model) {
 
         // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {

@@ -33,6 +33,7 @@ import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
 import static io.blueharvest.bank.constant.FieldValues.SURNAME;
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.ERROR_CONTEXT_PATH;
+import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -66,27 +67,39 @@ public class CustomerControllerTest {
     @Before
     public void setUp() throws Exception {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
+
         this.mockMvc = MockMvcBuilders.standaloneSetup(customerController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new CustomerValidator())
                 .setControllerAdvice(new BankExceptionHandler()).build();
     }
 
+    /**
+     * Tests {@link CustomerController#init(Model)}
+     * @throws Exception
+     */
     @Test
-    public void init() {
-        //TODO: Add unit test
+    public void testInit() throws Exception{
+        List<Customer> customers = ImmutableList.of(testCustomer);
+        when(customerService.getAll()).thenReturn(customers);
+
+        this.mockMvc.perform(get("/" + CUSTOMERS_CONTEXT_PTAH))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/" + CUSTOMERS_CONTEXT_PTAH))
+                .andExpect(model().attribute(CUSTOMER_ATTRIBUTE_NAME, equalTo(new Customer())))
+                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, equalTo(ImmutableList.of(testCustomer))));
     }
 
 
     /**
-     * Tests {@link CustomerController#getCustomers(Model)}
+     * Tests {@link CustomerController#listCustomers(Model)}
      * @throws Exception
      */
     @Test
-    public void testGetCustomers() throws Exception {
+    public void testListCustomers() throws Exception {
         List<Customer> customers = ImmutableList.of(testCustomer);
         when(customerService.getAll()).thenReturn(customers);
 
-        this.mockMvc.perform(get("/" + CUSTOMERS_CONTEXT_PTAH + "/list"))
+        this.mockMvc.perform(get("/" + CUSTOMERS_CONTEXT_PTAH + "/" + LIST_CONTEXT_PATH))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/" + CUSTOMERS_CONTEXT_PTAH))
                 .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, equalTo(ImmutableList.of(testCustomer))));
@@ -111,7 +124,7 @@ public class CustomerControllerTest {
      * @throws Exception
      */
     @Test
-    public void testCreateCustomerWithInvalidCustomer() throws Exception{
+    public void testCreateCustomerWithInvalidCustomerDetails() throws Exception{
         testCustomer.setName(EMPTY); // Set customer name to EMPTY so it would be invalid to add it to the system
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 

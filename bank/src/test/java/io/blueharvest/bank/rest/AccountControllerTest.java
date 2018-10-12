@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import io.blueharvest.bank.error.BankExceptionHandler;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
-import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.service.AccountService;
 import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.utils.StandaloneMvcTestViewResolver;
@@ -32,7 +31,6 @@ import static io.blueharvest.bank.constant.FieldValues.CUSTOMER_ID;
 import static io.blueharvest.bank.constant.FieldValues.NAME;
 import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
 import static io.blueharvest.bank.constant.FieldValues.SURNAME;
-import static io.blueharvest.bank.constant.FieldValues.TRANSACTION_ID;
 import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
@@ -71,13 +69,11 @@ public class AccountControllerTest {
     private MockMvc mockMvc;
     private Customer testCustomer;
     private Account testAccount;
-    private Transaction testTransaction;
 
     @Before
     public void setUp() throws Exception {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
         testAccount = new Account(ACCOUNT_ID, CREDIT, testCustomer);
-        testTransaction = new Transaction(TRANSACTION_ID, CREDIT, testAccount);
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(accountController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new AccountValidator())

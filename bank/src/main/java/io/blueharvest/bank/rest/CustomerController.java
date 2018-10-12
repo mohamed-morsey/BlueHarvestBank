@@ -3,6 +3,7 @@ package io.blueharvest.bank.rest;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.validation.CustomerValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
@@ -77,11 +80,13 @@ public class CustomerController {
      * @return
      */
     @PostMapping(name = "createCustomer")
-    public String createCustomer(@Validated @ModelAttribute @RequestBody Customer customer, Errors errors) {
+    public String createCustomer(@Validated @ModelAttribute @RequestBody Customer customer, HttpServletResponse response, Errors errors) {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException(errors.getFieldErrors().get(0).toString());
         }
+
         customerService.create(customer);
+        response.setStatus(HttpServletResponse.SC_CREATED);
         return "redirect:/" + CUSTOMERS_CONTEXT_PTAH;
     }
 

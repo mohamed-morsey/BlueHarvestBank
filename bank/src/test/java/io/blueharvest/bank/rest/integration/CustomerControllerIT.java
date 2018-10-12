@@ -103,15 +103,20 @@ public class CustomerControllerIT {
      * </ul>
      */
     @Test
-    public void testCrudForAnnotations() throws Exception {
+    public void testCrudForCustomersAndAccounts() throws Exception {
         // Prepare the correct URI to contact the controller
         builder = UriComponentsBuilder.fromUriString("/" + CUSTOMERS_CONTEXT_PTAH);
         String uri = builder.toUriString();
 
         // 1- Get the number of customers before adding any -> should be 0
-        this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, ImmutableList.of()));
+        
+//                .andExpect(status().isOk())
+//                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, ImmutableList.of()));
+        MvcResult customersResult = this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH)).andReturn();
+        softly.assertThat(customersResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK);
+        softly.assertThat(customersResult.getModelAndView().getModel().get(CUSTOMERS_ATTRIBUTE_NAME)).isNotNull();
+        softly.assertThat(customersResult.getModelAndView().getModel().get(CUSTOMERS_ATTRIBUTE_NAME)).isEqualTo(ImmutableList.of());
+        softly.assertAll();
 //        String location = restTemplate.postForObject(uri, testCustomer, String.class);
 
 //        ResponseEntity<String> customerCreateResult =

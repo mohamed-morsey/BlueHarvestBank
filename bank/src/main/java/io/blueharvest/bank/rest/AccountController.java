@@ -43,7 +43,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @RequestMapping("/" + ACCOUNTS_CONTEXT_PTAH)
 public class AccountController {
     static final String ACCOUNT_ATTRIBUTE_NAME = "account";
-    static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
+    public static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
 
     private AccountService accountService;
     private AccountValidator accountValidator;

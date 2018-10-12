@@ -32,7 +32,7 @@ import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 @RequestMapping("/" + CUSTOMERS_CONTEXT_PTAH)
 public class CustomerController {
     static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
-    static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
+    public static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
 
     private CustomerService customerService;
     private CustomerValidator customerValidator;

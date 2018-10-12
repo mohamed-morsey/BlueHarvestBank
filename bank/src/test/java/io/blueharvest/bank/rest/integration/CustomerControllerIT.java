@@ -30,6 +30,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 
+import java.util.List;
+
 import static io.blueharvest.bank.constant.FieldValues.ACCOUNT_ID;
 import static io.blueharvest.bank.constant.FieldValues.ADDRESS;
 import static io.blueharvest.bank.constant.FieldValues.CREDIT;
@@ -47,6 +49,8 @@ import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_ATTRIBUTE_NAME
 import static io.blueharvest.bank.rest.AccountController.ACCOUNT_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.TransactionController.TRANSACTIONS_ATTRIBUTE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,7 +100,7 @@ public class CustomerControllerIT {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
         testAccount = new Account(ACCOUNT_ID, CREDIT);
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(customerController, accountController)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(customerController, accountController, transactionController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new CustomerValidator())
                 .setControllerAdvice(new BankExceptionHandler()).build();
     }
@@ -153,16 +157,17 @@ public class CustomerControllerIT {
                 .andExpect(redirectedUrl(uri));
 
         // 6- Get the number of accounts -> should be 1
-         this.mockMvc.perform(get(uri))
+        this.mockMvc.perform(get(uri))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, hasSize(1)));
 
         // 7- Get the number of transactions -> should be 1
         builder.replacePath("/" + TRANSACTIONS_CONTEXT_PTAH);
-        uri = builder.queryParam(ACCOUNT_ID_PARAMETER, String.valueOf(CUSTOMER_ID)).build().toUriString();
+        builder.replaceQueryParam(CUSTOMER_ID_PARAMETER); // Remove customerId parameter from URL
+        uri = builder.queryParam(ACCOUNT_ID_PARAMETER, String.valueOf(ACCOUNT_ID)).build().toUriString();
         this.mockMvc.perform(get(uri))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, hasSize(1)));
+                .andExpect(model().attribute(TRANSACTIONS_ATTRIBUTE_NAME, hasSize(1)));
 
     }
 }

@@ -20,7 +20,7 @@ public final class FieldValues {
     //endregion
 
     //region field values for accounts
-    public static final long ACCOUNT_ID = 5L;
+    public static final long ACCOUNT_ID = 1L;
     public static final Double CREDIT = 1000.50;
     public static final Double MODIFIED_CREDIT = 1500.10; // Used for updating account details
 
@@ -28,7 +28,7 @@ public final class FieldValues {
     //endregion
 
     //region field values for transactions
-    public static final long TRANSACTION_ID = 10L;
+    public static final long TRANSACTION_ID = 1L;
     public static final Double AMOUNT = 1000.50D;
 
     public static final int COUNT_OF_TRANSACTIONS = 1;

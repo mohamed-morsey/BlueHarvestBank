@@ -9,6 +9,7 @@ import io.blueharvest.bank.repository.CustomerRepository;
 import io.blueharvest.bank.repository.TransactionRepository;
 import io.blueharvest.bank.rest.AccountController;
 import io.blueharvest.bank.rest.CustomerController;
+import io.blueharvest.bank.rest.TransactionController;
 import io.blueharvest.bank.utils.StandaloneMvcTestViewResolver;
 import io.blueharvest.bank.validation.CustomerValidator;
 import org.assertj.core.api.SoftAssertions;
@@ -29,15 +30,24 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 
+import static io.blueharvest.bank.constant.FieldValues.ACCOUNT_ID;
 import static io.blueharvest.bank.constant.FieldValues.ADDRESS;
+import static io.blueharvest.bank.constant.FieldValues.CREDIT;
 import static io.blueharvest.bank.constant.FieldValues.CUSTOMER_ID;
 import static io.blueharvest.bank.constant.FieldValues.NAME;
 import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
 import static io.blueharvest.bank.constant.FieldValues.SURNAME;
+import static io.blueharvest.bank.constant.Fields.ACCOUNT_ID_PARAMETER;
+import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
+import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
+import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.AccountController.ACCOUNT_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -70,6 +80,8 @@ public class CustomerControllerIT {
     private CustomerController customerController;
     @Inject
     private AccountController accountController;
+    @Inject
+    private TransactionController transactionController;
 
     private MockMvc mockMvc;
 
@@ -82,6 +94,8 @@ public class CustomerControllerIT {
     @Before
     public void setUp() throws Exception {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
+        testAccount = new Account(ACCOUNT_ID, CREDIT);
+
         this.mockMvc = MockMvcBuilders.standaloneSetup(customerController, accountController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new CustomerValidator())
                 .setControllerAdvice(new BankExceptionHandler()).build();
@@ -89,9 +103,9 @@ public class CustomerControllerIT {
 
     @After
     public void teardown() {
-        customerRepository.deleteAll();
-        accountRepository.deleteAll();
         transactionRepository.deleteAll();
+        accountRepository.deleteAll();
+        customerRepository.deleteAll();
     }
 
     /**
@@ -109,124 +123,46 @@ public class CustomerControllerIT {
         String uri = builder.toUriString();
 
         // 1- Get the number of customers before adding any -> should be 0
-        
-//                .andExpect(status().isOk())
-//                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, ImmutableList.of()));
-        MvcResult customersResult = this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH)).andReturn();
-        softly.assertThat(customersResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK);
-        softly.assertThat(customersResult.getModelAndView().getModel().get(CUSTOMERS_ATTRIBUTE_NAME)).isNotNull();
-        softly.assertThat(customersResult.getModelAndView().getModel().get(CUSTOMERS_ATTRIBUTE_NAME)).isEqualTo(ImmutableList.of());
-        softly.assertAll();
-//        String location = restTemplate.postForObject(uri, testCustomer, String.class);
-
-//        ResponseEntity<String> customerCreateResult =
-//                restTemplate.exchange(
-//                        uri, POST, customerHttpEntity, String.class);
+        this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, hasSize(0)));
 
         // 2- Add a customer
         this.mockMvc.perform(post(uri)
-                .flashAttr("customer", testCustomer))
+                .flashAttr(CUSTOMER_ATTRIBUTE_NAME, testCustomer))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(uri));
 
         // 3- Get the number of customers -> should be 1
         this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, ImmutableList.of(testCustomer)));
+                .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, hasSize(1)));
 
-        // 1- Get the number of accounts before adding any -> should be 0
+        // 4- Get the number of accounts before adding any -> should be 0
         builder.replacePath("/" + ACCOUNTS_CONTEXT_PTAH);
-        uri = builder.toUriString();
-//        this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, ImmutableList.of()));
-        MvcResult result = this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH)).andReturn();
-        softly.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK);
-        softly.assertThat(result.getModelAndView().getModel().keySet()).size();
-//                .as("Count of annotations before add")
-//                .hasSize(0);
-        softly.assertAll();
+        uri = builder.queryParam(CUSTOMER_ID_PARAMETER, String.valueOf(CUSTOMER_ID)).build().toUriString();
 
-//        // Adding an annotation
-//        builder.queryParam(TEXT_BODY_PARAMETER, TEXT_BODY);
-//        uri = builder.buildAndExpand(TEXT_CHUNK_ID).toUri();
-//
-//        ResponseEntity<ResultEnvelope<Annotation>> resultOfPosting =
-//                restTemplate.exchange(
-//                        uri, POST, new HttpEntity<>(headers), ANNOTATION_RESPONSE_TYPE);
-//
-//        softly.assertThat(resultOfPosting.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-//        softly.assertThat(resultOfPosting.getBody().getData().getTextBody()).isEqualTo(TEXT_BODY);
-//        softly.assertAll();
-//
-//        String insertedAnnotationId = resultOfPosting.getBody().getData().getId();
-//
-//        // Getting annotations after adding one
-//        builder.replaceQueryParam(TEXT_BODY_PARAMETER, (Object) null);
-//        uri = builder.buildAndExpand(TEXT_CHUNK_ID).toUri();
-//
-//        customerCreateResult =
-//                restTemplate.exchange(
-//                        uri, GET, new HttpEntity<>(headers), ANNOTATION_LIST_RESPONSE_TYPE);
-//
-//        softly.assertThat(customerCreateResult.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        softly.assertThat(customerCreateResult.getBody().getData())
-//                .as("Count of annotations after add")
-//                .hasSize(1);
-//        softly.assertAll();
-//
-//        // Updating the annotation
-//        builder.replaceQueryParam(TEXT_BODY_PARAMETER, MODIFIED_TEXT_BODY)
-//                .queryParam(ANNOTATION_ID_PARAMETER, insertedAnnotationId);
-//        uri = builder.buildAndExpand(TEXT_CHUNK_ID).toUri();
-//
-//        ResponseEntity<ResultEnvelope<Void>> resultOfPutting =
-//                restTemplate.exchange(
-//                        uri, PUT, new HttpEntity<>(headers), EMPTY_RESULT_RESPONSE_TYPE);
-//
-//        softly.assertThat(resultOfPutting.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        softly.assertAll();
-//
-//        // Getting annotations after update
-//        builder.replaceQueryParam(TEXT_BODY_PARAMETER, (Object) null)
-//                .replaceQueryParam(ANNOTATION_ID_PARAMETER, (Object) null);
-//        uri = builder.buildAndExpand(TEXT_CHUNK_ID).toUri();
-//
-//        customerCreateResult =
-//                restTemplate.exchange(
-//                        uri, GET, new HttpEntity<>(headers), ANNOTATION_LIST_RESPONSE_TYPE);
-//
-//        softly.assertThat(customerCreateResult.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        softly.assertThat(customerCreateResult.getBody().getData())
-//                .as("Count of annotations after update")
-//                .hasSize(1);
-//        softly.assertThat(customerCreateResult.getBody().getData().get(0).getTextBody())
-//                .isEqualTo(MODIFIED_TEXT_BODY);
-//        softly.assertAll();
-//
-//        // Deleting the annotation
-//        builder.replaceQueryParam(ANNOTATION_ID_PARAMETER, insertedAnnotationId);
-//        uri = builder.buildAndExpand(TEXT_CHUNK_ID).toUri();
-//
-//        ResponseEntity<Void> resultOfDeleting =
-//                restTemplate.exchange(uri, DELETE, new HttpEntity<>(headers), EMPTY_RESPONSE_TYPE);
-//
-//        softly.assertThat(resultOfDeleting.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        softly.assertAll();
-//
-//        // Getting annotations after delete
-//        builder.replaceQueryParam(TEXT_BODY_PARAMETER, (Object) null)
-//                .replaceQueryParam(ANNOTATION_ID_PARAMETER, (Object) null);
-//        uri = builder.buildAndExpand(TEXT_CHUNK_ID).toUri();
-//
-//        customerCreateResult =
-//                restTemplate.exchange(
-//                        uri, GET, new HttpEntity<>(headers), ANNOTATION_LIST_RESPONSE_TYPE);
-//
-//        softly.assertThat(customerCreateResult.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        softly.assertThat(customerCreateResult.getBody().getData())
-//                .as("Count of annotations after delete")
-//                .hasSize(0);
-//        softly.assertAll();
+        this.mockMvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, hasSize(0)));
+
+        // 5- Add an account
+        this.mockMvc.perform(post(uri)
+                .flashAttr(ACCOUNT_ATTRIBUTE_NAME, testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(uri));
+
+        // 6- Get the number of accounts -> should be 1
+         this.mockMvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, hasSize(1)));
+
+        // 7- Get the number of transactions -> should be 1
+        builder.replacePath("/" + TRANSACTIONS_CONTEXT_PTAH);
+        uri = builder.queryParam(ACCOUNT_ID_PARAMETER, String.valueOf(CUSTOMER_ID)).build().toUriString();
+        this.mockMvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, hasSize(1)));
+
     }
 }

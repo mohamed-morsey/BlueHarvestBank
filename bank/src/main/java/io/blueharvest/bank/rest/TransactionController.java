@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + TRANSACTIONS_CONTEXT_PTAH)
 public class TransactionController {
-    static final String TRANSACTIONS_ATTRIBUTE_NAME = "transactions";
+    public static final String TRANSACTIONS_ATTRIBUTE_NAME = "transactions";
 
     private TransactionService transactionService;
     private AccountService accountService;

@@ -34,7 +34,7 @@ import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 @Controller
 @RequestMapping("/" + CUSTOMERS_CONTEXT_PTAH)
 public class CustomerController {
-    static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
+    public static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
     public static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
 
     private CustomerService customerService;
@@ -80,13 +80,12 @@ public class CustomerController {
      * @return
      */
     @PostMapping(name = "createCustomer")
-    public String createCustomer(@Validated @ModelAttribute @RequestBody Customer customer, HttpServletResponse response, Errors errors) {
+    public String createCustomer(@Validated @ModelAttribute @RequestBody Customer customer, Errors errors) {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException(errors.getFieldErrors().get(0).toString());
         }
 
         customerService.create(customer);
-        response.setStatus(HttpServletResponse.SC_CREATED);
         return "redirect:/" + CUSTOMERS_CONTEXT_PTAH;
     }
 

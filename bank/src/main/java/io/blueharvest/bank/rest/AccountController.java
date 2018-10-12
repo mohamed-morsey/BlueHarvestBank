@@ -42,7 +42,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + ACCOUNTS_CONTEXT_PTAH)
 public class AccountController {
-    static final String ACCOUNT_ATTRIBUTE_NAME = "account";
+    public static final String ACCOUNT_ATTRIBUTE_NAME = "account";
     public static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
 
     private AccountService accountService;

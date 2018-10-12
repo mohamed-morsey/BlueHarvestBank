@@ -115,23 +115,46 @@ public class CustomerControllerIT {
     /**
      * Tests the following scenario
      * <ul>
-     * <li>Create customer</li>
-     * <li>Open account for customer</li>
-     * <li>Make sure a transaction is created for the account</li>
+     * <li>Get number of customers, accounts and transactions in the system</li>
+     * <li>Add customer</li>
+     * <li>Get number of customers after add</li>
+     * <li>Get number of accounts</li>
+     * <li>Add account</li>
+     * <li>Get number of accounts after add</li>
+     * <li>Get number of transactions after add</li>
      * </ul>
      */
     @Test
     public void testCrudForCustomersAndAccounts() throws Exception {
-        // Prepare the correct URI to contact the controller
+        // 1- Get the number of customers, accounts and transactions before adding any -> all should be 0
+
+        // Prepare the correct URI to contact the customer controller
         builder = UriComponentsBuilder.fromUriString("/" + CUSTOMERS_CONTEXT_PTAH);
         String uri = builder.toUriString();
 
-        // 1- Get the number of customers before adding any -> should be 0
         this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, hasSize(0)));
 
+        // Prepare the correct URI to contact the account controller
+        builder.replacePath("/" + ACCOUNTS_CONTEXT_PTAH);
+        uri = builder.toUriString();
+
+        this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute(ACCOUNTS_ATTRIBUTE_NAME, hasSize(0)));
+
+        // Prepare the correct URI to contact the transaction controller
+        builder.replacePath("/" + TRANSACTIONS_CONTEXT_PTAH);
+        uri = builder.toUriString();
+
+        this.mockMvc.perform(get(uri + "/" + LIST_CONTEXT_PATH))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute(TRANSACTIONS_ATTRIBUTE_NAME, hasSize(0)));
+
         // 2- Add a customer
+        builder.replacePath("/" + CUSTOMERS_CONTEXT_PTAH);
+        uri = builder.toUriString();
         this.mockMvc.perform(post(uri)
                 .flashAttr(CUSTOMER_ATTRIBUTE_NAME, testCustomer))
                 .andExpect(status().is3xxRedirection())

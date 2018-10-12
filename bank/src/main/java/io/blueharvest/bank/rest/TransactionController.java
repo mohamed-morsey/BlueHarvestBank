@@ -21,6 +21,7 @@ import java.util.Optional;
 import static io.blueharvest.bank.constant.Fields.ACCOUNT_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
+import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -47,6 +48,23 @@ public class TransactionController {
         this.logger = logger;
     }
 
+    /**
+     * Returns all transactions in the system
+     * @param model
+     * @return
+     */
+    @GetMapping(path = "/" + LIST_CONTEXT_PATH, name = "getTransactions")
+    public String listAccounts(Model model) {
+        List<Account> accounts = accountService.getAll();
+        model.addAttribute(TRANSACTIONS_ATTRIBUTE_NAME, accounts);
+        return "/" + TRANSACTIONS_CONTEXT_PTAH;
+    }
+
+    /**
+     * Returns all transactions of a specific account
+     * @param model
+     * @return
+     */
     @GetMapping(name = "getTransactionsForAccount")
     public String getTransactionForAccount(@NotNull @RequestParam(ACCOUNT_ID_PARAMETER) String accountId, Model model) {
 

@@ -64,6 +64,12 @@ public class AccountController {
         binder.addValidators(accountValidator);
     }
 
+
+    /**
+     * Returns all accounts in the system
+     * @param model
+     * @return
+     */
     @GetMapping(path = "/" + LIST_CONTEXT_PATH, name = "getAccounts")
     public String listAccounts(Model model) {
         List<Account> accounts = accountService.getAll();
@@ -71,6 +77,12 @@ public class AccountController {
         return "/" + ACCOUNTS_CONTEXT_PTAH;
     }
 
+    /**
+     * Returns all accounts of a specific customer
+     * @param customerId The ID of the customer
+     * @param model
+     * @return
+     */
     @GetMapping(name = "getAccountsForCustomer")
     public String getAccountsForCustomer(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
                                          Model model) {
@@ -94,6 +106,13 @@ public class AccountController {
         return "/" + ACCOUNTS_CONTEXT_PTAH;
     }
 
+
+    /**
+     * Creates an account and its associated transaction
+     * @param customerId The ID of the customer
+     * @param account The account to be created
+     * @return
+     */
     @PostMapping(name = "createAccount")
     public String createAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
                                 @Validated @ModelAttribute Account account, Errors errors) {

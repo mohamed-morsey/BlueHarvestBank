@@ -101,7 +101,7 @@ public class CustomerControllerTest {
     }
 
     /**
-     * Tests {@link CustomerController#createCustomer(Customer, Errors, BindingResult)} with success
+     * Tests {@link CustomerController#createCustomer(Customer, Errors)} with success
      *
      * @throws Exception
      */
@@ -116,7 +116,7 @@ public class CustomerControllerTest {
     }
 
     /**
-     * Tests {@link CustomerController#createCustomer(Customer, Errors, BindingResult)} with failure due to invalid customer details
+     * Tests {@link CustomerController#createCustomer(Customer, Errors)} with failure due to invalid customer details
      *
      * @throws Exception
      */

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.inject.Inject;
@@ -73,11 +74,10 @@ public class CustomerController {
      *
      * @param customer      The customer to be created
      * @param errors
-     * @param bindingResult
      * @return
      */
     @PostMapping(name = "createCustomer")
-    public String createCustomer(@Validated @ModelAttribute Customer customer, Errors errors, BindingResult bindingResult) {
+    public String createCustomer(@Validated @ModelAttribute @RequestBody Customer customer, Errors errors) {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException(errors.getFieldErrors().get(0).toString());
         }

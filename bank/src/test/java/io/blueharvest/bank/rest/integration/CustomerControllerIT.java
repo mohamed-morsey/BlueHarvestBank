@@ -100,9 +100,9 @@ public class CustomerControllerIT {
 
     @After
     public void teardown() {
-        transactionRepository.deleteAll();
-        accountRepository.deleteAll();
         customerRepository.deleteAll();
+        accountRepository.deleteAll();
+        transactionRepository.deleteAll();
     }
 
     /**

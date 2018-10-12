@@ -82,7 +82,7 @@ public class Customer {
         this.postcode = postcode;
     }
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
     public Set<Account> getAccounts() {
         return accounts;
     }

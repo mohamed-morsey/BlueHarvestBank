@@ -67,6 +67,7 @@ public class AccountController {
 
     /**
      * Returns all accounts in the system
+     *
      * @param model
      * @return
      */
@@ -79,6 +80,7 @@ public class AccountController {
 
     /**
      * Returns all accounts of a specific customer
+     *
      * @param customerId The ID of the customer
      * @param model
      * @return
@@ -109,8 +111,9 @@ public class AccountController {
 
     /**
      * Creates an account and its associated transaction
+     *
      * @param customerId The ID of the customer
-     * @param account The account to be created
+     * @param account    The account to be created
      * @return
      */
     @PostMapping(name = "createAccount")

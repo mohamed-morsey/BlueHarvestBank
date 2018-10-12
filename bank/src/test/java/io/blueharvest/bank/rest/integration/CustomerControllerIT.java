@@ -1,6 +1,5 @@
 package io.blueharvest.bank.rest.integration;
 
-import com.google.common.collect.ImmutableList;
 import io.blueharvest.bank.error.BankExceptionHandler;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
@@ -20,17 +19,12 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
-
-import java.util.List;
 
 import static io.blueharvest.bank.constant.FieldValues.ACCOUNT_ID;
 import static io.blueharvest.bank.constant.FieldValues.ADDRESS;
@@ -50,7 +44,6 @@ import static io.blueharvest.bank.rest.AccountController.ACCOUNT_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.TransactionController.TRANSACTIONS_ATTRIBUTE_NAME;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -50,6 +50,7 @@ public class TransactionController {
 
     /**
      * Returns all transactions in the system
+     *
      * @param model
      * @return
      */
@@ -62,6 +63,7 @@ public class TransactionController {
 
     /**
      * Returns all transactions of a specific account
+     *
      * @param model
      * @return
      */

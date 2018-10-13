@@ -143,7 +143,7 @@ public class AccountControllerTest {
      * Tests {@link AccountController#createAccount(String, AccountDto, Errors)}
      */
     @Test
-    public void createAccount() throws Exception {
+    public void testCreateAccount() throws Exception {
         when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.of(testCustomer));
         when(accountService.create(testAccount)).thenReturn(testAccount);
 
@@ -161,7 +161,7 @@ public class AccountControllerTest {
      * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but with an invalid customer ID
      */
     @Test
-    public void createAccountWithInvalidCustomerId() throws Exception {
+    public void testCreateAccountWithInvalidCustomerId() throws Exception {
         this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
                 .param(CUSTOMER_ID_PARAMETER, String.valueOf(INVALID_CUSTOMER_ID))
                 .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
@@ -172,7 +172,7 @@ public class AccountControllerTest {
      * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but for a nonexistent customer
      */
     @Test
-    public void createAccountForNonexistentCustomer() throws Exception {
+    public void testCreateAccountForNonexistentCustomer() throws Exception {
         when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.empty());
 
         this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)

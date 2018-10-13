@@ -1,7 +1,6 @@
 package io.blueharvest.bank.validation;
 
 import io.blueharvest.bank.dto.AccountDto;
-import io.blueharvest.bank.model.Account;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

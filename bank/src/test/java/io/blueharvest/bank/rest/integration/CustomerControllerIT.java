@@ -13,7 +13,6 @@ import io.blueharvest.bank.rest.CustomerController;
 import io.blueharvest.bank.rest.TransactionController;
 import io.blueharvest.bank.utils.StandaloneMvcTestViewResolver;
 import io.blueharvest.bank.validation.CustomerValidator;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

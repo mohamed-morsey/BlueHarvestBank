@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Basic CRUD operations a service should support
+ * Basic create, read, update, and delete (CRUD) operations a service should support
  *
  * @author Mohamed Morsey
  * Date: 2018-10-05

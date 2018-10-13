@@ -86,7 +86,7 @@ public class Account {
         this.customer = customer;
     }
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     public Set<Transaction> getTransactions() {
         return transactions;
     }

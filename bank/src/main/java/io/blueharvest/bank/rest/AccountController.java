@@ -100,7 +100,7 @@ public class AccountController {
 
         // Check if the customer already exists
         long customerIdLong = Long.parseLong(customerId);
-        if(!customerService.exists(customerIdLong)){
+        if (!customerService.exists(customerIdLong)) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
             throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
         }
@@ -121,7 +121,7 @@ public class AccountController {
      * Creates an account and its associated transaction
      *
      * @param customerId The ID of the customer
-     * @param accountDto    The DTO of account to be created
+     * @param accountDto The DTO of account to be created
      * @return
      */
     @PostMapping(name = "createAccount")

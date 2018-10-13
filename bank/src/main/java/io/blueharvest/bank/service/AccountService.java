@@ -47,6 +47,7 @@ public class AccountService implements CrudService<Account> {
     @Override
     public Optional<Account> get(long id) {
         checkArgument(id > 0, INVALID_ID_ERROR);
+
         return Optional.ofNullable(accountRepository.findById(id));
     }
 

@@ -50,13 +50,15 @@ public class CustomerController {
     @GetMapping
     public String init(Model model) {
         List<Customer> customers = customerService.getAll();
+
         model.addAttribute(CUSTOMERS_ATTRIBUTE_NAME, customers);
         model.addAttribute(CUSTOMER_ATTRIBUTE_NAME, new Customer());
+
         return "/" + CUSTOMERS_CONTEXT_PTAH;
     }
 
     /**
-     * Returns all customers in the system
+     * Return all customers in the system
      *
      * @param model
      * @return
@@ -64,12 +66,14 @@ public class CustomerController {
     @GetMapping(path = "/" + LIST_CONTEXT_PATH)
     public String listCustomers(Model model) {
         List<Customer> customers = customerService.getAll();
+
         model.addAttribute(CUSTOMERS_ATTRIBUTE_NAME, customers);
+
         return "/" + CUSTOMERS_CONTEXT_PTAH;
     }
 
     /**
-     * Creates a new customer and adds it to the system
+     * Create a new customer and add it to the system
      *
      * @param customer The customer to be created
      * @param errors

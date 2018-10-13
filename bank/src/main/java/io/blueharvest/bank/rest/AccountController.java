@@ -66,7 +66,7 @@ public class AccountController {
 
 
     /**
-     * Returns all accounts in the system
+     * Return all accounts in the system
      *
      * @param model
      * @return
@@ -79,7 +79,7 @@ public class AccountController {
     }
 
     /**
-     * Returns all accounts of a specific customer
+     * Return all accounts of a specific customer
      *
      * @param customerId The ID of the customer
      * @param model

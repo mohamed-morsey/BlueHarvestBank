@@ -83,6 +83,8 @@ public class CustomerService implements CrudService<Customer> {
      * @return True if the customer exists, false otherwise
      */
     public boolean exists(long id) {
+        checkArgument(id > 0, INVALID_ID_ERROR);
+
         return customerRepository.existsById(id);
     }
 

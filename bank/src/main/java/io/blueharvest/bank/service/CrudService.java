@@ -26,7 +26,7 @@ public interface CrudService<T> {
     List<T> getAll();
 
     /**
-     * Creates a new item and adds it to the system
+     * Create a new item and adds it to the system
      *
      * @param item The item to be created
      * @return The newly created item
@@ -34,7 +34,7 @@ public interface CrudService<T> {
     T create(T item);
 
     /**
-     * Updates an existing item
+     * Update an existing item
      *
      * @param item The item to be updated
      * @return True if update was successful, false otherwise
@@ -42,7 +42,7 @@ public interface CrudService<T> {
     boolean update(T item);
 
     /**
-     * Deletes an existing item
+     * Delete an existing item
      *
      * @param id The ID of the item
      * @return True if deletion was successful, false otherwise

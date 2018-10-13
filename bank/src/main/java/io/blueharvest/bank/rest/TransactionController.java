@@ -49,7 +49,7 @@ public class TransactionController {
     }
 
     /**
-     * Returns all transactions in the system
+     * Return all transactions in the system
      *
      * @param model
      * @return
@@ -62,7 +62,7 @@ public class TransactionController {
     }
 
     /**
-     * Returns all transactions of a specific account
+     * Return all transactions of a specific account
      *
      * @param model
      * @return

@@ -44,7 +44,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Controller
 @RequestMapping("/" + ACCOUNTS_CONTEXT_PTAH)
 public class AccountController {
-    public static final String ACCOUNT_ATTRIBUTE_NAME = "account";
+    public static final String ACCOUNT_DTO_ATTRIBUTE_NAME = "accountDto";
     public static final String ACCOUNTS_ATTRIBUTE_NAME = "accounts";
 
     private AccountService accountService;
@@ -52,7 +52,7 @@ public class AccountController {
     private CustomerService customerService;
     private Logger logger;
 
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = new ModelMapper(); // Mapper for converting between entities and DTOs
 
     @Inject
     public AccountController(AccountService accountService, AccountValidator accountValidator,
@@ -98,12 +98,17 @@ public class AccountController {
             throw new IllegalArgumentException(INVALID_ID_ERROR);
         }
 
+        // Check if the customer already exists
         long customerIdLong = Long.parseLong(customerId);
+        if(!customerService.exists(customerIdLong)){
+            logger.warn(CUSTOMER_NOT_FOUND_ERROR);
+            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
+        }
 
         // This account is initialized to enable setting input fields to default values
-        Account initializedAccount = new Account();
-        initializedAccount.setCustomer(getCustomer(customerIdLong));
-        model.addAttribute(ACCOUNT_ATTRIBUTE_NAME, initializedAccount); // Required for initializing the input fields
+        AccountDto initializedAccountDto = new AccountDto();
+        initializedAccountDto.setCustomerId(customerIdLong);
+        model.addAttribute(ACCOUNT_DTO_ATTRIBUTE_NAME, initializedAccountDto); // Required for initializing the input fields
 
         List<Account> accounts = accountService.getAccountsForCustomer(customerIdLong);
         model.addAttribute(ACCOUNTS_ATTRIBUTE_NAME, accounts);

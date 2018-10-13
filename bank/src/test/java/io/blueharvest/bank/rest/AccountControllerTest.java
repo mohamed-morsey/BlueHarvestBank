@@ -1,6 +1,7 @@
 package io.blueharvest.bank.rest;
 
 import com.google.common.collect.ImmutableList;
+import io.blueharvest.bank.dto.AccountDto;
 import io.blueharvest.bank.error.BankExceptionHandler;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
@@ -35,7 +37,7 @@ import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_ATTRIBUTE_NAME;
-import static io.blueharvest.bank.rest.AccountController.ACCOUNT_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.AccountController.ACCOUNT_DTO_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,13 +69,17 @@ public class AccountControllerTest {
     private AccountController accountController;
 
     private MockMvc mockMvc;
+    private ModelMapper mapper = new ModelMapper(); // Mapper for converting between entities and DTOs
     private Customer testCustomer;
     private Account testAccount;
+    private AccountDto testAccountDto;
 
     @Before
     public void setUp() throws Exception {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
         testAccount = new Account(ACCOUNT_ID, CREDIT, testCustomer);
+        testAccountDto = new AccountDto();
+        mapper.map(testAccount, testAccountDto);
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(accountController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new AccountValidator())
@@ -100,7 +106,7 @@ public class AccountControllerTest {
     @Test
     public void testGetAccountsForCustomer() throws Exception {
         List<Account> accounts = ImmutableList.of(testAccount);
-        when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.of(testCustomer));
+        when(customerService.exists(CUSTOMER_ID)).thenReturn(true);
         when(accountService.getAccountsForCustomer(CUSTOMER_ID)).thenReturn(accounts);
 
         this.mockMvc.perform(get("/" + ACCOUNTS_CONTEXT_PTAH)
@@ -134,7 +140,7 @@ public class AccountControllerTest {
     }
 
     /**
-     * Tests {@link AccountController#createAccount(String, Account, Errors)}
+     * Tests {@link AccountController#createAccount(String, AccountDto, Errors)}
      */
     @Test
     public void createAccount() throws Exception {
@@ -146,25 +152,24 @@ public class AccountControllerTest {
 
         this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
                 .param(CUSTOMER_ID_PARAMETER, String.valueOf(CUSTOMER_ID))
-                .flashAttr(ACCOUNT_ATTRIBUTE_NAME, testAccount))
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(targetUrl.toUriString()));
     }
 
     /**
-     * Tests {@link AccountController#createAccount(String, Account, Errors)} but with an invalid customer ID
+     * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but with an invalid customer ID
      */
     @Test
     public void createAccountWithInvalidCustomerId() throws Exception {
-
         this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
                 .param(CUSTOMER_ID_PARAMETER, String.valueOf(INVALID_CUSTOMER_ID))
-                .flashAttr(ACCOUNT_ATTRIBUTE_NAME, testAccount))
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
                 .andExpect(status().isBadRequest());
     }
 
     /**
-     * Tests {@link AccountController#createAccount(String, Account, Errors)} but for a nonexistent customer
+     * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but for a nonexistent customer
      */
     @Test
     public void createAccountForNonexistentCustomer() throws Exception {
@@ -172,7 +177,7 @@ public class AccountControllerTest {
 
         this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
                 .param(CUSTOMER_ID_PARAMETER, String.valueOf(CUSTOMER_ID))
-                .flashAttr(ACCOUNT_ATTRIBUTE_NAME, testAccount))
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
                 .andExpect(status().isNotFound());
     }
 }

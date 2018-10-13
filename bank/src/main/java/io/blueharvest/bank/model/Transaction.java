@@ -28,18 +28,17 @@ public class Transaction {
     private Account account;
 
     public Transaction() {
-        this(0L, 0.0D);
-    }
-
-    public Transaction(long id, Double amount) {
-        this.id = id;
-        this.amount = amount;
+        this.id = 0L;
+        this.amount = 0.0D;
+        this.account = new Account();
         this.transactionTime = new Date();
     }
 
     public Transaction(long id, Double amount, Account account) {
-        this(id, amount);
+        this.id = id;
+        this.amount = amount;
         this.account = account;
+        this.transactionTime = new Date();
     }
 
     @Id

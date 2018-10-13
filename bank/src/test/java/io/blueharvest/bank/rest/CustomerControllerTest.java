@@ -1,6 +1,7 @@
 package io.blueharvest.bank.rest;
 
 import com.google.common.collect.ImmutableList;
+import io.blueharvest.bank.dto.CustomerDto;
 import io.blueharvest.bank.error.BankExceptionHandler;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.service.CustomerService;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
@@ -27,7 +29,7 @@ import static io.blueharvest.bank.constant.FieldValues.SURNAME;
 import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
-import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_DTO_ATTRIBUTE_NAME;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
@@ -54,11 +56,14 @@ public class CustomerControllerTest {
     private CustomerController customerController;
 
     private MockMvc mockMvc;
+    private ModelMapper mapper = new ModelMapper(); // Mapper for converting between entities and DTOs
     private Customer testCustomer;
+    private CustomerDto testCustomerDto;
 
     @Before
     public void setUp() throws Exception {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
+        testCustomerDto = new CustomerDto();
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(customerController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new CustomerValidator())
@@ -78,7 +83,7 @@ public class CustomerControllerTest {
         this.mockMvc.perform(get("/" + CUSTOMERS_CONTEXT_PTAH))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/" + CUSTOMERS_CONTEXT_PTAH))
-                .andExpect(model().attribute(CUSTOMER_ATTRIBUTE_NAME, equalTo(new Customer())))
+                .andExpect(model().attribute(CUSTOMER_DTO_ATTRIBUTE_NAME, equalTo(new CustomerDto())))
                 .andExpect(model().attribute(CUSTOMERS_ATTRIBUTE_NAME, equalTo(ImmutableList.of(testCustomer))));
     }
 
@@ -100,32 +105,36 @@ public class CustomerControllerTest {
     }
 
     /**
-     * Tests {@link CustomerController#createCustomer(Customer, Errors)} with success
+     * Tests {@link CustomerController#createCustomer(CustomerDto, Errors)} with success
      *
      * @throws Exception
      */
     @Test
     public void testCreateCustomer() throws Exception {
+        mapper.map(testCustomer, testCustomerDto);
+
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 
         this.mockMvc.perform(post("/" + CUSTOMERS_CONTEXT_PTAH)
-                .flashAttr(CUSTOMER_ATTRIBUTE_NAME, testCustomer))
+                .flashAttr(CUSTOMER_DTO_ATTRIBUTE_NAME, testCustomerDto))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/" + CUSTOMERS_CONTEXT_PTAH));
     }
 
     /**
-     * Tests {@link CustomerController#createCustomer(Customer, Errors)} with failure due to invalid customer details
+     * Tests {@link CustomerController#createCustomer(CustomerDto, Errors)} with failure due to invalid customer details
      *
      * @throws Exception
      */
     @Test
     public void testCreateCustomerWithInvalidCustomerDetails() throws Exception {
         testCustomer.setName(EMPTY); // Set customer name to EMPTY so it would be invalid to add it to the system
+        mapper.map(testCustomer, testCustomerDto);
+
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 
         this.mockMvc.perform(post("/" + CUSTOMERS_CONTEXT_PTAH)
-                .flashAttr(CUSTOMER_ATTRIBUTE_NAME, testCustomer))
+                .flashAttr(CUSTOMER_DTO_ATTRIBUTE_NAME, testCustomerDto))
                 .andExpect(status().isBadRequest());
     }
 }

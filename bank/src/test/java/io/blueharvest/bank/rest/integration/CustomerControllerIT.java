@@ -1,5 +1,7 @@
 package io.blueharvest.bank.rest.integration;
 
+import io.blueharvest.bank.dto.AccountDto;
+import io.blueharvest.bank.dto.CustomerDto;
 import io.blueharvest.bank.error.BankExceptionHandler;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
@@ -16,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -40,9 +43,9 @@ import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
 import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_ATTRIBUTE_NAME;
-import static io.blueharvest.bank.rest.AccountController.ACCOUNT_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.AccountController.ACCOUNT_DTO_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
-import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_ATTRIBUTE_NAME;
+import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_DTO_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.TransactionController.TRANSACTIONS_ATTRIBUTE_NAME;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -83,15 +86,21 @@ public class CustomerControllerIT {
     private MockMvc mockMvc;
 
     private Customer testCustomer;
+    private CustomerDto testCustomerDto;
     private Account testAccount;
+    private AccountDto testAccountDto;
     private UriComponentsBuilder builder;
-
-    private SoftAssertions softly = new SoftAssertions();
+    private ModelMapper mapper = new ModelMapper(); // Mapper for converting between entities and DTOs
 
     @Before
     public void setUp() throws Exception {
         testCustomer = new Customer(CUSTOMER_ID, NAME, SURNAME, ADDRESS, POSTCODE);
+        testCustomerDto = new CustomerDto();
+        mapper.map(testCustomer, testCustomerDto);
+
         testAccount = new Account(ACCOUNT_ID, CREDIT);
+        testAccountDto = new AccountDto();
+        mapper.map(testAccount, testAccountDto);
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(customerController, accountController, transactionController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver()).setValidator(new CustomerValidator())
@@ -149,7 +158,7 @@ public class CustomerControllerIT {
         builder.replacePath("/" + CUSTOMERS_CONTEXT_PTAH);
         uri = builder.toUriString();
         this.mockMvc.perform(post(uri)
-                .flashAttr(CUSTOMER_ATTRIBUTE_NAME, testCustomer))
+                .flashAttr(CUSTOMER_DTO_ATTRIBUTE_NAME, testCustomerDto))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(uri));
 
@@ -168,7 +177,7 @@ public class CustomerControllerIT {
 
         // 5- Add an account
         this.mockMvc.perform(post(uri)
-                .flashAttr(ACCOUNT_ATTRIBUTE_NAME, testAccount))
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(uri));
 

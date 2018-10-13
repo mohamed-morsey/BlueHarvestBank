@@ -31,13 +31,13 @@ import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 @Controller
 @RequestMapping("/" + CUSTOMERS_CONTEXT_PTAH)
 public class CustomerController {
-    public static final String CUSTOMER_ATTRIBUTE_NAME = "customer";
+    public static final String CUSTOMER_DTO_ATTRIBUTE_NAME = "customerDto";
     public static final String CUSTOMERS_ATTRIBUTE_NAME = "customers";
 
     private CustomerService customerService;
     private CustomerValidator customerValidator;
 
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = new ModelMapper(); // Mapper for converting between entities and DTOs
 
     @Inject
     public CustomerController(CustomerService customerService, CustomerValidator customerValidator) {
@@ -55,7 +55,7 @@ public class CustomerController {
         List<Customer> customers = customerService.getAll();
 
         model.addAttribute(CUSTOMERS_ATTRIBUTE_NAME, customers);
-        model.addAttribute(CUSTOMER_ATTRIBUTE_NAME, new Customer());
+        model.addAttribute(CUSTOMER_DTO_ATTRIBUTE_NAME, new CustomerDto());
 
         return "/" + CUSTOMERS_CONTEXT_PTAH;
     }

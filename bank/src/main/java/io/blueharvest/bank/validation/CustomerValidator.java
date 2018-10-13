@@ -1,6 +1,6 @@
 package io.blueharvest.bank.validation;
 
-import io.blueharvest.bank.model.Customer;
+import io.blueharvest.bank.dto.CustomerDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -16,7 +16,7 @@ import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_POSTCODE_ERROR
 import static io.blueharvest.bank.constant.Messages.BLANK_INVALID_SURNAME_ERROR;
 
 /**
- * Validator for {@link Customer}
+ * Validator for {@link CustomerDto}
  *
  * @author Mohamed Morsey
  * Date: 2018-10-05
@@ -26,12 +26,12 @@ public class CustomerValidator implements Validator {
 
     @Override
     public boolean supports(final Class<?> clazz) {
-        return Customer.class.equals(clazz);
+        return CustomerDto.class.equals(clazz);
     }
 
     @Override
     public void validate(final Object obj, final Errors errors) {
-        final Customer customer = (Customer) obj;
+        final CustomerDto customer = (CustomerDto) obj;
 
         if (StringUtils.isBlank(customer.getName())) {
             errors.rejectValue(NAME_FIELD, BLANK_INVALID_NAME_ERROR);

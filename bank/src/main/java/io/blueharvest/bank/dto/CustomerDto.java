@@ -1,24 +1,20 @@
-package io.blueharvest.bank.model;
+package io.blueharvest.bank.dto;
 
+import io.blueharvest.bank.model.Customer;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
- * Represents a bank customer in the system
+ * DTO for {@link Customer}
  *
  * @author Mohamed Morsey
  * Date: 2018-10-04
  **/
-@Entity
-public class Customer {
+public class CustomerDto {
     private long id;
 
     @NotBlank
@@ -33,17 +29,15 @@ public class Customer {
     @NotBlank
     private String postcode;
 
-    private Set<Account> accounts;
-
-    public Customer() {
+    public CustomerDto() {
         id = 0L;
     }
 
-    public Customer(long id) {
+    public CustomerDto(long id) {
         this(id, EMPTY, EMPTY, EMPTY, EMPTY);
     }
 
-    public Customer(long id, String name, String surname, String address, String postcode) {
+    public CustomerDto(long id, String name, String surname, String address, String postcode) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -93,26 +87,17 @@ public class Customer {
         this.postcode = postcode;
     }
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
-    public Set<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(Set<Account> accounts) {
-        this.accounts = accounts;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
 
-        if (!(o instanceof Customer)) {
+        if (!(o instanceof CustomerDto)) {
             return false;
         }
 
-        Customer customer = (Customer) o;
+        CustomerDto customer = (CustomerDto) o;
 
         return id == customer.id;
     }
@@ -130,7 +115,6 @@ public class Customer {
                 ", surname='" + surname + '\'' +
                 ", address='" + address + '\'' +
                 ", postcode='" + postcode + '\'' +
-                ", accounts=" + accounts +
                 '}';
     }
 }

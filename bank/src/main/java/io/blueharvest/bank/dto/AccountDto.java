@@ -1,24 +1,19 @@
-package io.blueharvest.bank.model;
+package io.blueharvest.bank.dto;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
+import io.blueharvest.bank.model.Account;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Set;
 
 /**
- * A bank account belonging to a specific customer
+ * DTO for {@link Account}
  *
  * @author Mohamed Morsey
  * Date: 2018-10-05
  **/
-@Entity
-public class Account {
+public class AccountDto {
     private long id;
 
     @NotNull
@@ -27,27 +22,25 @@ public class Account {
     @NotNull
     private Date establishDate;
 
-    private Customer customer;
+    private long customerId;
 
-    private Set<Transaction> transactions;
-
-    public Account() {
+    public AccountDto() {
         this(0L, 0.0D);
     }
 
-    public Account(long id) {
+    public AccountDto(long id) {
         this(id, 0.0D);
     }
 
-    public Account(long id, Double credit) {
+    public AccountDto(long id, Double credit) {
         this.id = id;
         this.credit = credit;
         this.establishDate = new Date();
     }
 
-    public Account(long id, Double credit, Customer customer) {
+    public AccountDto(long id, Double credit, long customerId) {
         this(id, credit);
-        this.customer = customer;
+        this.customerId = customerId;
     }
 
     @Id
@@ -76,23 +69,12 @@ public class Account {
         this.establishDate = establishDate;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "account_customer_id")
-    public Customer getCustomer() {
-        return customer;
+    public long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE)
-    public Set<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setCustomerId(long customerId) {
+        this.customerId = customerId;
     }
 
     @Override
@@ -101,11 +83,11 @@ public class Account {
             return true;
         }
 
-        if (!(o instanceof Account)) {
+        if (!(o instanceof AccountDto)) {
             return false;
         }
 
-        Account account = (Account) o;
+        AccountDto account = (AccountDto) o;
 
         return id == account.id;
     }
@@ -120,7 +102,7 @@ public class Account {
         return "Account{" +
                 "id=" + id +
                 ", credit=" + credit +
-                ", customer=" + customer +
+                ", customerId=" + customerId +
                 '}';
     }
 }

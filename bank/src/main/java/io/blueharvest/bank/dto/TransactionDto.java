@@ -1,21 +1,19 @@
-package io.blueharvest.bank.model;
+package io.blueharvest.bank.dto;
 
-import javax.persistence.Entity;
+import io.blueharvest.bank.model.Transaction;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
- * A transaction performed on an account
+ * DTO for {@link Transaction}
  *
  * @author Mohamed Morsey
  * Date: 2018-10-06
  **/
-@Entity
-public class Transaction {
+public class TransactionDto {
     private long id;
 
     @NotNull
@@ -23,23 +21,21 @@ public class Transaction {
 
     @NotNull
     private Date transactionTime;
+    private long accountId;
 
-    @NotNull
-    private Account account;
-
-    public Transaction() {
+    public TransactionDto() {
         this(0L, 0.0D);
     }
 
-    public Transaction(long id, Double amount) {
+    public TransactionDto(long id, Double amount) {
         this.id = id;
         this.amount = amount;
         this.transactionTime = new Date();
     }
 
-    public Transaction(long id, Double amount, Account account) {
+    public TransactionDto(long id, Double amount, long accountId) {
         this(id, amount);
-        this.account = account;
+        this.accountId = accountId;
     }
 
     @Id
@@ -68,14 +64,12 @@ public class Transaction {
         this.transactionTime = transactionTime;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "transaction_account_id")
-    public Account getAccount() {
-        return account;
+    public long getAccountId() {
+        return accountId;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 
     @Override
@@ -84,11 +78,11 @@ public class Transaction {
             return true;
         }
 
-        if (!(o instanceof Transaction)) {
+        if (!(o instanceof TransactionDto)) {
             return false;
         }
 
-        Transaction transaction = (Transaction) o;
+        TransactionDto transaction = (TransactionDto) o;
 
         return id == transaction.id;
     }
@@ -104,7 +98,7 @@ public class Transaction {
                 "id=" + id +
                 ", amount=" + amount +
                 ", transactionTime=" + transactionTime +
-                ", account=" + account +
+                ", accountId=" + accountId +
                 '}';
     }
 }

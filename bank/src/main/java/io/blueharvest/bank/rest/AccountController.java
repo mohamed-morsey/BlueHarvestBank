@@ -1,5 +1,6 @@
 package io.blueharvest.bank.rest;
 
+import io.blueharvest.bank.dto.AccountDto;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.service.AccountService;
@@ -8,6 +9,7 @@ import io.blueharvest.bank.validation.AccountValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.ObjectNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -50,6 +52,8 @@ public class AccountController {
     private CustomerService customerService;
     private Logger logger;
 
+    private ModelMapper mapper = new ModelMapper();
+
     @Inject
     public AccountController(AccountService accountService, AccountValidator accountValidator,
                              CustomerService customerService, Logger logger) {
@@ -59,11 +63,10 @@ public class AccountController {
         this.logger = logger;
     }
 
-    @InitBinder("account")
+    @InitBinder("accountDto")
     protected void initBinder(final WebDataBinder binder) {
         binder.addValidators(accountValidator);
     }
-
 
     /**
      * Return all accounts in the system
@@ -113,12 +116,12 @@ public class AccountController {
      * Creates an account and its associated transaction
      *
      * @param customerId The ID of the customer
-     * @param account    The account to be created
+     * @param accountDto    The DTO of account to be created
      * @return
      */
     @PostMapping(name = "createAccount")
     public String createAccount(@NotNull @RequestParam(CUSTOMER_ID_PARAMETER) String customerId,
-                                @Validated @ModelAttribute Account account, Errors errors) {
+                                @Validated @ModelAttribute AccountDto accountDto, Errors errors) {
 
         // Check if a valid customer ID is passed
         if ((StringUtils.isBlank(customerId)) || (!StringUtils.isNumeric(customerId))) {
@@ -130,6 +133,9 @@ public class AccountController {
         }
 
         // Get the customer associated with
+        Account account = new Account();
+        mapper.map(accountDto, account);
+
         long customerIdLong = Long.parseLong(customerId);
         account.setCustomer(getCustomer(customerIdLong));
 

@@ -7,12 +7,12 @@
 </head>
 <body bgcolor="white">
 <H3>Add Account</H3>
-<form action="#" th:action="@{/accounts?customerId=} + ${#httpServletRequest.getParameter('customerId')}" th:object="${account}" method="post">
+<form action="#" th:action="@{/accounts?customerId=} + ${#httpServletRequest.getParameter('customerId')}" th:object="${accountDto}" method="post">
     <table style="width:25%">
         <tr>
             <td>Customer ID:</td>
             <td><input type="text" th:disabled="true" th:amount="${#httpServletRequest.getParameter('customerId')}"
-                       th:field="*{customer.id}"/></td>
+                       th:field="*{customerId}"/></td>
         </tr>
         <tr>
             <td>Initial Credit (€):</td>

@@ -8,7 +8,7 @@
 </head>
 <body bgcolor="white">
 <H3>Add Customer</H3>
-<form action="#" th:action="@{/customers}" th:object="${customer}" method="post">
+<form action="#" th:action="@{/customers}" th:object="${customerDto}" method="post">
     <table style="width:30%">
         <tr>
             <td>Name:</td>
@@ -51,13 +51,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="customer, rowStat: ${customers}">
-            <td th:text="${customer.id}"></td>
-            <td th:text="${customer.name}"></td>
-            <td th:text="${customer.surname}"></td>
-            <td th:text="${customer.address}"></td>
-            <td th:text="${customer.postcode}"></td>
-            <td><a th:href="'/accounts?customerId='+${customer.id}">View Accounts</a></td>
+        <tr th:each="customerDto, rowStat: ${customers}">
+            <td th:text="${customerDto.id}"></td>
+            <td th:text="${customerDto.name}"></td>
+            <td th:text="${customerDto.surname}"></td>
+            <td th:text="${customerDto.address}"></td>
+            <td th:text="${customerDto.postcode}"></td>
+            <td><a th:href="'/accounts?customerId='+${customerDto.id}">View Accounts</a></td>
         </tr>
         </tbody>
     </table>

@@ -17,7 +17,7 @@ Simple banking application for Blue Harvest coding challenge.
 2. Run command **"cd bank"**.
 3. Run command **"mvn spring-boot:run"** to start the application.
 
-The application starts and it is available at **"http://localhost:8080/customers"**.
+The application starts and it is available at **"http://localhost:8080"**.
 
 ## Supported Operating Systems
 The application has been tested on:

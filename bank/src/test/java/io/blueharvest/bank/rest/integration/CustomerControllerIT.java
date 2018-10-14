@@ -54,10 +54,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Integration test class for {@link CustomerController} and {@link AccountController} that tests the whole creation scenario
+ * Integration test class for {@link CustomerController}, {@link AccountController} and {@link TransactionController}
+ * that tests the whole creation scenario
  *
  * @author Mohamed Morsey
- * Date: 2018-10-11
+ * Date: 2018-10-12
  **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

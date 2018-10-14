@@ -15,13 +15,9 @@ import java.util.Date;
  **/
 public class AccountDto {
     private long id;
-
-    @NotNull
-    private Double credit;
-
+    private double credit;
     @NotNull
     private Date establishDate;
-
     private long customerId;
 
     public AccountDto() {
@@ -32,13 +28,13 @@ public class AccountDto {
         this(id, 0.0D);
     }
 
-    public AccountDto(long id, Double credit) {
+    public AccountDto(long id, double credit) {
         this.id = id;
         this.credit = credit;
         this.establishDate = new Date();
     }
 
-    public AccountDto(long id, Double credit, long customerId) {
+    public AccountDto(long id, double credit, long customerId) {
         this(id, credit);
         this.customerId = customerId;
     }
@@ -53,11 +49,11 @@ public class AccountDto {
         this.id = id;
     }
 
-    public Double getCredit() {
+    public double getCredit() {
         return credit;
     }
 
-    public void setCredit(Double credit) {
+    public void setCredit(double credit) {
         this.credit = credit;
     }
 

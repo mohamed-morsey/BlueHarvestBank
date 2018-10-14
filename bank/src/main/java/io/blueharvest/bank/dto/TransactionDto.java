@@ -16,8 +16,7 @@ import java.util.Date;
 public class TransactionDto {
     private long id;
 
-    @NotNull
-    private Double amount;
+    private double amount;
 
     @NotNull
     private Date transactionTime;
@@ -33,7 +32,7 @@ public class TransactionDto {
         this.transactionTime = new Date();
     }
 
-    public TransactionDto(long id, Double amount, long accountId) {
+    public TransactionDto(long id, double amount, long accountId) {
         this(id, amount);
         this.accountId = accountId;
     }
@@ -48,11 +47,11 @@ public class TransactionDto {
         this.id = id;
     }
 
-    public Double getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

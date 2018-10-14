@@ -23,7 +23,7 @@ The application starts and it is available at **"http://localhost:8080/customers
 The application has been tested on:
 
 1. Ubuntu 16.04 LTS.
-2. Windows 10.
+2. Windows 7 Ultimate.
 
 ## Supported Browsers
 The application has been tested on:

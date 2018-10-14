@@ -3,6 +3,7 @@ package io.blueharvest.bank.rest;
 import com.google.common.collect.ImmutableList;
 import io.blueharvest.bank.dto.AccountDto;
 import io.blueharvest.bank.error.BankExceptionHandler;
+import io.blueharvest.bank.error.TransactionalOperationException;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.service.AccountService;
@@ -35,6 +36,7 @@ import static io.blueharvest.bank.constant.FieldValues.NAME;
 import static io.blueharvest.bank.constant.FieldValues.POSTCODE;
 import static io.blueharvest.bank.constant.FieldValues.SURNAME;
 import static io.blueharvest.bank.constant.Fields.CUSTOMER_ID_PARAMETER;
+import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATION_FAILED_ERROR;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.AccountController.ACCOUNTS_ATTRIBUTE_NAME;
@@ -214,5 +216,22 @@ public class AccountControllerTest {
                 .param(CUSTOMER_ID_PARAMETER, String.valueOf(CUSTOMER_ID))
                 .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
                 .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but with transaction failure
+     */
+    @Test
+    public void testCreateAccountWithTransactionFailure() throws Exception {
+        when(customerService.get(CUSTOMER_ID)).thenReturn(Optional.of(testCustomer));
+        when(accountService.create(testAccount)).thenThrow(new TransactionalOperationException(ACCOUNT_CREATION_FAILED_ERROR));
+
+        UriComponentsBuilder targetUrl = UriComponentsBuilder.fromPath("/" + ACCOUNTS_CONTEXT_PTAH);
+        targetUrl.queryParam(CUSTOMER_ID_PARAMETER, CUSTOMER_ID);
+
+        this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
+                .param(CUSTOMER_ID_PARAMETER, String.valueOf(CUSTOMER_ID))
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
+                .andExpect(status().isInternalServerError());
     }
 }

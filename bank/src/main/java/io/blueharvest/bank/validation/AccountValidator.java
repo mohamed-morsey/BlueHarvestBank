@@ -26,7 +26,7 @@ public class AccountValidator implements Validator {
     public void validate(final Object obj, final Errors errors) {
         final AccountDto account = (AccountDto) obj;
 
-        if ((account.getCredit() == null) || (account.getCredit() <= 0)) {
+        if (account.getCredit() <= 0) {
             errors.rejectValue(CREDIT_FIELD, BLANK_INVALID_INITIAL_CREDIT_ERROR);
         }
 

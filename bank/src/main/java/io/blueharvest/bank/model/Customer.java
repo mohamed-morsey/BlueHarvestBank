@@ -33,8 +33,6 @@ public class Customer {
     @NotBlank
     private String postcode;
 
-
-
     public Customer() {
         id = 0L;
     }

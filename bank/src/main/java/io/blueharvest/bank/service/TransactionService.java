@@ -3,6 +3,7 @@ package io.blueharvest.bank.service;
 import io.blueharvest.bank.model.Account;
 import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.repository.TransactionRepository;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -11,7 +12,9 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.blueharvest.bank.constant.Messages.COUNT_TRANSACTIONS_READ_SUCCESSFULLY;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
+import static io.blueharvest.bank.constant.Messages.TRANSACTION_CREATED_SUCCESSFULLY;
 import static io.blueharvest.bank.constant.Messages.TRANSACTION_NULL_ERROR;
 
 /**
@@ -23,10 +26,12 @@ import static io.blueharvest.bank.constant.Messages.TRANSACTION_NULL_ERROR;
 @Service
 public class TransactionService {
     private TransactionRepository transactionRepository;
+    private Logger logger;
 
     @Inject
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository, Logger logger) {
         this.transactionRepository = transactionRepository;
+        this.logger = logger;
     }
 
     /**
@@ -59,6 +64,8 @@ public class TransactionService {
     public Transaction create(Transaction transaction) {
         checkNotNull(transaction, TRANSACTION_NULL_ERROR);
 
+        logger.info(TRANSACTION_CREATED_SUCCESSFULLY);
+
         return transactionRepository.save(transaction);
     }
 
@@ -72,6 +79,9 @@ public class TransactionService {
         checkArgument(accountId > 0, INVALID_ID_ERROR);
 
         Account accountToFind = new Account(accountId); // The account whose transactions should be returned
-        return transactionRepository.findByAccount(accountToFind);
+        List<Transaction> transactions = transactionRepository.findByAccount(accountToFind);
+        logger.info(String.format(COUNT_TRANSACTIONS_READ_SUCCESSFULLY, transactions.size()));
+
+        return transactions;
     }
 }

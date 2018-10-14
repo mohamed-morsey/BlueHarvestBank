@@ -9,7 +9,13 @@ package io.blueharvest.bank.constant;
 public final class Messages {
 
     //region success messages
-    public static final String COUNT_CLIENTS_READ_SUCCESSFULLY = "%d clients read successfully";
+    public static final String COUNT_CUSTOMERS_READ_SUCCESSFULLY = "%d customers read successfully";
+    public static final String COUNT_ACCOUNTS_READ_SUCCESSFULLY = "%d accounts read successfully";
+    public static final String COUNT_TRANSACTIONS_READ_SUCCESSFULLY = "%d transactions read successfully";
+
+    public static final String CUSTOMER_CREATED_SUCCESSFULLY = "Customer created successfully";
+    public static final String ACCOUNT_CREATED_SUCCESSFULLY = "Account created successfully";
+    public static final String TRANSACTION_CREATED_SUCCESSFULLY = "Transaction created successfully";
     //endregion
 
     //region generic error messages

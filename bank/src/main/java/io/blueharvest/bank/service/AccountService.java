@@ -16,9 +16,11 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATED_SUCCESSFULLY;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_CREATION_FAILED_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.ACCOUNT_NULL_ERROR;
+import static io.blueharvest.bank.constant.Messages.COUNT_ACCOUNTS_READ_SUCCESSFULLY;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 
@@ -53,7 +55,11 @@ public class AccountService implements CrudService<Account> {
 
     @Override
     public List<Account> getAll() {
-        return accountRepository.findAll();
+        List<Account> accounts = accountRepository.findAll();
+
+        logger.info(String.format(COUNT_ACCOUNTS_READ_SUCCESSFULLY, accounts.size()));
+
+        return accounts;
     }
 
     @Override
@@ -113,7 +119,10 @@ public class AccountService implements CrudService<Account> {
         checkArgument(customerId > 0, INVALID_ID_ERROR);
 
         Customer customerToFind = new Customer(customerId); // The customer whose accounts should be returned
-        return accountRepository.findByCustomer(customerToFind);
+        List<Account> accounts = accountRepository.findByCustomer(customerToFind);
+        logger.info(String.format(COUNT_ACCOUNTS_READ_SUCCESSFULLY, accounts.size()));
+
+        return accounts;
     }
 
     /**
@@ -124,6 +133,7 @@ public class AccountService implements CrudService<Account> {
     private Account createAccountWithTransaction(Account account) {
         try {
             Account insertedAccount = accountRepository.save(account);
+            logger.info(ACCOUNT_CREATED_SUCCESSFULLY);
 
             // Create a transaction associated with that account with the initail credit
             Transaction initialTransaction = new Transaction();

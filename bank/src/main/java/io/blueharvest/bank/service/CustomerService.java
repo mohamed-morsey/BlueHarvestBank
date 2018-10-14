@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.blueharvest.bank.constant.Messages.COUNT_CUSTOMERS_READ_SUCCESSFULLY;
+import static io.blueharvest.bank.constant.Messages.CUSTOMER_CREATED_SUCCESSFULLY;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.CUSTOMER_NULL_ERROR;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
@@ -36,18 +38,27 @@ public class CustomerService implements CrudService<Customer> {
     @Override
     public Optional<Customer> get(long id) {
         checkArgument(id > 0, INVALID_ID_ERROR);
+
         return Optional.ofNullable(customerRepository.findById(id));
     }
 
     @Override
     public List<Customer> getAll() {
-        return customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAll();
+
+        logger.info(String.format(COUNT_CUSTOMERS_READ_SUCCESSFULLY, customers.size()));
+
+        return customers;
     }
 
     @Override
     public Customer create(Customer customer) {
         checkNotNull(customer, CUSTOMER_NULL_ERROR);
-        return customerRepository.save(customer);
+
+        Customer createdCustomer = customerRepository.save(customer);
+        logger.info(CUSTOMER_CREATED_SUCCESSFULLY);
+
+        return createdCustomer;
     }
 
     @Override

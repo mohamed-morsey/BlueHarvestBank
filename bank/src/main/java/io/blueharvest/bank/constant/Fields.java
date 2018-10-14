@@ -8,14 +8,6 @@ package io.blueharvest.bank.constant;
  **/
 public final class Fields {
 
-    // region parameter names
-    public static final String ID_PARAMETER = "id";
-    // endregion
-
-    // region generic field names
-    public static final String ID_FIELD = "id";
-    // endregion
-
     // region field names of customer
     public static final String NAME_FIELD = "name";
     public static final String SURNAME_FIELD = "surname";

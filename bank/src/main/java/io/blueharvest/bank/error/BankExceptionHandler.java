@@ -29,8 +29,8 @@ public class BankExceptionHandler {
     /**
      * Handler for {@link IllegalArgumentException} that can be thrown in case of invalid parameter is passed
      *
-     * @param exp
-     * @param response
+     * @param exp Exception to be handled
+     * @param response The response object
      * @throws IOException
      */
     @ExceptionHandler(IllegalArgumentException.class)
@@ -44,8 +44,8 @@ public class BankExceptionHandler {
     /**
      * Handler for {@link ObjectNotFoundException} that can be thrown if an item does not exist
      *
-     * @param exp
-     * @param response
+     * @param exp Exception to be handled
+     * @param response The response object
      * @throws IOException
      */
     @ExceptionHandler(ObjectNotFoundException.class)
@@ -59,8 +59,8 @@ public class BankExceptionHandler {
     /**
      * Handler for {@link TransactionalOperationException} that can be thrown if an item does not exist
      *
-     * @param exp
-     * @param response
+     * @param exp Exception to be handled
+     * @param response The response object
      * @throws IOException
      */
     @ExceptionHandler(TransactionalOperationException.class)

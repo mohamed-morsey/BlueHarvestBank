@@ -23,7 +23,6 @@ import static io.blueharvest.bank.constant.Messages.ACCOUNT_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Controller for {@link Transaction}s
@@ -89,7 +88,7 @@ public class TransactionController {
         Optional<Account> existingAccountOptional = accountService.get(accountId);
         if (!existingAccountOptional.isPresent()) {
             logger.warn(ACCOUNT_NOT_FOUND_ERROR);
-            throw new ObjectNotFoundException(ACCOUNT_NOT_FOUND_ERROR, EMPTY);
+            throw new ObjectNotFoundException(ACCOUNT_NOT_FOUND_ERROR, StringUtils.EMPTY);
         }
 
         return existingAccountOptional.get();

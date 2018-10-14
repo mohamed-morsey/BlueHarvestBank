@@ -33,7 +33,6 @@ import static io.blueharvest.bank.constant.Messages.CUSTOMER_NOT_FOUND_ERROR;
 import static io.blueharvest.bank.constant.Messages.INVALID_ID_ERROR;
 import static io.blueharvest.bank.constant.Paths.ACCOUNTS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Controller for {@link Account}s
@@ -102,7 +101,7 @@ public class AccountController {
         long customerIdLong = Long.parseLong(customerId);
         if (!customerService.exists(customerIdLong)) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
-            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
+            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, StringUtils.EMPTY);
         }
 
         // This account is initialized to enable setting input fields to default values
@@ -157,7 +156,7 @@ public class AccountController {
         Optional<Customer> existingCustomerOptional = customerService.get(customerId);
         if (!existingCustomerOptional.isPresent()) {
             logger.warn(CUSTOMER_NOT_FOUND_ERROR);
-            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, EMPTY);
+            throw new ObjectNotFoundException(CUSTOMER_NOT_FOUND_ERROR, StringUtils.EMPTY);
         }
 
         return existingCustomerOptional.get();

@@ -1,12 +1,11 @@
 package io.blueharvest.bank.dto;
 
 import io.blueharvest.bank.model.Customer;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * DTO for {@link Customer}
@@ -34,7 +33,7 @@ public class CustomerDto {
     }
 
     public CustomerDto(long id) {
-        this(id, EMPTY, EMPTY, EMPTY, EMPTY);
+        this(id, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     public CustomerDto(long id, String name, String surname, String address, String postcode) {

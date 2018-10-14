@@ -7,6 +7,7 @@ import io.blueharvest.bank.model.Transaction;
 import io.blueharvest.bank.service.AccountService;
 import io.blueharvest.bank.service.TransactionService;
 import io.blueharvest.bank.utils.StandaloneMvcTestViewResolver;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,6 +99,19 @@ public class TransactionControllerTest {
 
         this.mockMvc.perform(get("/" + TRANSACTIONS_CONTEXT_PTAH)
                 .param(ACCOUNT_ID_PARAMETER, String.valueOf(INVALID_ACCOUNT_ID)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Tests {@link TransactionController#getTransactionForAccount(String, Model)} but with a blank account ID
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testGetTransactionForAccountWithBlankAccountId() throws Exception {
+
+        this.mockMvc.perform(get("/" + TRANSACTIONS_CONTEXT_PTAH)
+                .param(ACCOUNT_ID_PARAMETER, String.valueOf(StringUtils.EMPTY)))
                 .andExpect(status().isBadRequest());
     }
 

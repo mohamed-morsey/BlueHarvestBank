@@ -9,6 +9,7 @@ import io.blueharvest.bank.service.AccountService;
 import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.utils.StandaloneMvcTestViewResolver;
 import io.blueharvest.bank.validation.AccountValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,6 +129,16 @@ public class AccountControllerTest {
     }
 
     /**
+     * Tests {@link AccountController#getAccountsForCustomer(String, Model)} but with a blank customer ID
+     */
+    @Test
+    public void testGetAccountsForCustomerWithBlankCustomerId() throws Exception {
+        this.mockMvc.perform(get("/" + ACCOUNTS_CONTEXT_PTAH)
+                .param(CUSTOMER_ID_PARAMETER, StringUtils.EMPTY))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
      * Tests {@link AccountController#getAccountsForCustomer(String, Model)} but for a nonexistent customer
      */
     @Test
@@ -164,6 +175,30 @@ public class AccountControllerTest {
     public void testCreateAccountWithInvalidCustomerId() throws Exception {
         this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
                 .param(CUSTOMER_ID_PARAMETER, String.valueOf(INVALID_CUSTOMER_ID))
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but with a blank customer ID
+     */
+    @Test
+    public void testCreateAccountWithBlankCustomerId() throws Exception {
+        this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
+                .param(CUSTOMER_ID_PARAMETER, StringUtils.EMPTY)
+                .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Tests {@link AccountController#createAccount(String, AccountDto, Errors)} but with an invalid credit value
+     */
+    @Test
+    public void testCreateAccountWithInvalidCredit() throws Exception {
+        testAccountDto.setCredit(-10.00D);// Set the credit to an invalid value
+
+        this.mockMvc.perform(post("/" + ACCOUNTS_CONTEXT_PTAH)
+                .param(CUSTOMER_ID_PARAMETER, String.valueOf(CUSTOMER_ID))
                 .flashAttr(ACCOUNT_DTO_ATTRIBUTE_NAME, testAccountDto))
                 .andExpect(status().isBadRequest());
     }

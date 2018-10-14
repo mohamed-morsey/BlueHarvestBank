@@ -7,7 +7,8 @@
 </head>
 <body bgcolor="white">
 <H3>Add Account</H3>
-<form action="#" th:action="@{/accounts?customerId=} + ${#httpServletRequest.getParameter('customerId')}" th:object="${accountDto}" method="post">
+<form action="#" th:action="@{/accounts?customerId=} + ${#httpServletRequest.getParameter('customerId')}"
+      th:object="${accountDto}" method="post">
     <table style="width:25%">
         <tr>
             <td>Customer ID:</td>
@@ -19,7 +20,7 @@
             <td><input type="text" th:field="*{credit}"/></td>
         </tr>
         <tr>
-            <td><input type="submit" amount="Submit" value="Create Account" /></td>
+            <td><input type="submit" amount="Submit" value="Create Account"/></td>
             <td><input type="reset" amount="Clear" value="Clear All"/></td>
         </tr>
     </table>
@@ -42,7 +43,7 @@
             <td th:text="${account.customer.name} + ' ' + ${account.customer.surname}"></td>
             <td th:text="${#dates.format(account.establishDate, 'yyyy-MM-dd h:mm:ss a')}"></td>
             <td th:text="'€ ' + ${#numbers.formatDecimal(account.credit, 1, 'COMMA', 2, 'POINT')}"></td>
-            <td><a th:href="'/transactions?accountId='+${account.id}">View Transactions</a> </td>
+            <td><a th:href="'/transactions?accountId='+${account.id}">View Transactions</a></td>
         </tr>
         </tbody>
     </table>

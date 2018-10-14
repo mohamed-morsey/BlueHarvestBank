@@ -1,5 +1,6 @@
 package io.blueharvest.bank.model;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.CascadeType;
@@ -8,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Represents a bank customer in the system
@@ -40,7 +39,7 @@ public class Customer {
     }
 
     public Customer(long id) {
-        this(id, EMPTY, EMPTY, EMPTY, EMPTY);
+        this(id, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     public Customer(long id, String name, String surname, String address, String postcode) {

@@ -7,6 +7,7 @@ import io.blueharvest.bank.model.Customer;
 import io.blueharvest.bank.service.CustomerService;
 import io.blueharvest.bank.utils.StandaloneMvcTestViewResolver;
 import io.blueharvest.bank.validation.CustomerValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,6 @@ import static io.blueharvest.bank.constant.Paths.CUSTOMERS_CONTEXT_PTAH;
 import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMERS_ATTRIBUTE_NAME;
 import static io.blueharvest.bank.rest.CustomerController.CUSTOMER_DTO_ATTRIBUTE_NAME;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -128,7 +128,7 @@ public class CustomerControllerTest {
      */
     @Test
     public void testCreateCustomerWithInvalidCustomerDetails() throws Exception {
-        testCustomer.setName(EMPTY); // Set customer name to EMPTY so it would be invalid to add it to the system
+        testCustomer.setName(StringUtils.EMPTY); // Set customer name to EMPTY so it would be invalid to add it to the system
         mapper.map(testCustomer, testCustomerDto);
 
         when(customerService.create(testCustomer)).thenReturn(testCustomer);

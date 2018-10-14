@@ -198,4 +198,12 @@ public class CustomerServiceTest {
         assertThat(exists).isTrue();
     }
 
+    /**
+     * Tests {@link CustomerService#exists(long)} but for negative ID
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testExistsForNegativeId() {
+        customerService.exists(-1);
+    }
+
 }

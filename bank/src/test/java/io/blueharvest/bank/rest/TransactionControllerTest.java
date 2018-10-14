@@ -27,6 +27,7 @@ import static io.blueharvest.bank.constant.FieldValues.AMOUNT;
 import static io.blueharvest.bank.constant.FieldValues.CREDIT;
 import static io.blueharvest.bank.constant.FieldValues.TRANSACTION_ID;
 import static io.blueharvest.bank.constant.Fields.ACCOUNT_ID_PARAMETER;
+import static io.blueharvest.bank.constant.Paths.LIST_CONTEXT_PATH;
 import static io.blueharvest.bank.constant.Paths.TRANSACTIONS_CONTEXT_PTAH;
 import static io.blueharvest.bank.rest.TransactionController.TRANSACTIONS_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.equalTo;
@@ -69,6 +70,22 @@ public class TransactionControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(transactionController)
                 .setViewResolvers(new StandaloneMvcTestViewResolver())
                 .setControllerAdvice(new BankExceptionHandler()).build();
+    }
+
+    /**
+     * Tests {@link TransactionController#listTransactions(Model)}
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testListCustomers() throws Exception {
+        List<Transaction> transactions = ImmutableList.of(testTransaction);
+        when(transactionService.getAll()).thenReturn(transactions);
+
+        this.mockMvc.perform(get("/" + TRANSACTIONS_CONTEXT_PTAH + "/" + LIST_CONTEXT_PATH))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/" + TRANSACTIONS_CONTEXT_PTAH))
+                .andExpect(model().attribute(TRANSACTIONS_ATTRIBUTE_NAME, equalTo(ImmutableList.of(testTransaction))));
     }
 
     /**

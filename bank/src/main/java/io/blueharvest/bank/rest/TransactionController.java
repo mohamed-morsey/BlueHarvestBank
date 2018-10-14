@@ -54,9 +54,9 @@ public class TransactionController {
      * @return
      */
     @GetMapping(path = "/" + LIST_CONTEXT_PATH, name = "getTransactions")
-    public String listAccounts(Model model) {
-        List<Account> accounts = accountService.getAll();
-        model.addAttribute(TRANSACTIONS_ATTRIBUTE_NAME, accounts);
+    public String listTransactions(Model model) {
+        List<Transaction> transactions = transactionService.getAll();
+        model.addAttribute(TRANSACTIONS_ATTRIBUTE_NAME, transactions);
         return "/" + TRANSACTIONS_CONTEXT_PTAH;
     }
 

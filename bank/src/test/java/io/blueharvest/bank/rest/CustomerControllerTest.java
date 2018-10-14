@@ -112,7 +112,6 @@ public class CustomerControllerTest {
     @Test
     public void testCreateCustomer() throws Exception {
         mapper.map(testCustomer, testCustomerDto);
-
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 
         this.mockMvc.perform(post("/" + CUSTOMERS_CONTEXT_PTAH)
@@ -122,15 +121,36 @@ public class CustomerControllerTest {
     }
 
     /**
-     * Tests {@link CustomerController#createCustomer(CustomerDto, Errors)} with failure due to invalid customer details
+     * Tests {@link CustomerController#createCustomer(CustomerDto, Errors)} with failure due to invalid personal details
      *
      * @throws Exception
      */
     @Test
-    public void testCreateCustomerWithInvalidCustomerDetails() throws Exception {
-        testCustomer.setName(StringUtils.EMPTY); // Set customer name to EMPTY so it would be invalid to add it to the system
-        mapper.map(testCustomer, testCustomerDto);
+    public void testCreateCustomerWithInvalidPersonalDetails() throws Exception {
+        // Set customer name and surname to EMPTY so it would be invalid to add it to the system
+        testCustomer.setName(StringUtils.EMPTY);
+        testCustomer.setSurname(StringUtils.EMPTY);
 
+        mapper.map(testCustomer, testCustomerDto);
+        when(customerService.create(testCustomer)).thenReturn(testCustomer);
+
+        this.mockMvc.perform(post("/" + CUSTOMERS_CONTEXT_PTAH)
+                .flashAttr(CUSTOMER_DTO_ATTRIBUTE_NAME, testCustomerDto))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Tests {@link CustomerController#createCustomer(CustomerDto, Errors)} with failure due to invalid address details
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCreateCustomerWithInvalidAddressDetails() throws Exception {
+        // Set customer address and postcode to EMPTY so it would be invalid to add it to the system
+        testCustomer.setAddress(StringUtils.EMPTY);
+        testCustomer.setPostcode(StringUtils.EMPTY);
+
+        mapper.map(testCustomer, testCustomerDto);
         when(customerService.create(testCustomer)).thenReturn(testCustomer);
 
         this.mockMvc.perform(post("/" + CUSTOMERS_CONTEXT_PTAH)

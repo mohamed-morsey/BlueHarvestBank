@@ -16,9 +16,10 @@ import java.util.Date;
 public class AccountDto {
     private long id;
     private double credit;
+    private long customerId;
+
     @NotNull
     private Date establishDate;
-    private long customerId;
 
     public AccountDto() {
         this(0L, 0.0D);

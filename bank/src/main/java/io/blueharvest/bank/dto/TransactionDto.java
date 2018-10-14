@@ -15,12 +15,11 @@ import java.util.Date;
  **/
 public class TransactionDto {
     private long id;
-
     private double amount;
+    private long accountId;
 
     @NotNull
     private Date transactionTime;
-    private long accountId;
 
     public TransactionDto() {
         this(0L, 0.0D);

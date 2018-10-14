@@ -19,6 +19,7 @@ import java.util.Set;
 @Entity
 public class Customer {
     private long id;
+    private Set<Account> accounts;
 
     @NotBlank
     private String name;
@@ -32,7 +33,7 @@ public class Customer {
     @NotBlank
     private String postcode;
 
-    private Set<Account> accounts;
+
 
     public Customer() {
         id = 0L;

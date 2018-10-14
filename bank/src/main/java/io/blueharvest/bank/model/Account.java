@@ -20,16 +20,14 @@ import java.util.Set;
 @Entity
 public class Account {
     private long id;
+    private Customer customer;
+    private Set<Transaction> transactions;
 
     @NotNull
     private Double credit;
 
     @NotNull
     private Date establishDate;
-
-    private Customer customer;
-
-    private Set<Transaction> transactions;
 
     public Account() {
         this(0L, 0.0D);

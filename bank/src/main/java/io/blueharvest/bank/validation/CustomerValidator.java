@@ -37,7 +37,7 @@ public class CustomerValidator implements Validator {
             errors.rejectValue(NAME_FIELD, BLANK_INVALID_NAME_ERROR);
         }
 
-        if (StringUtils.isBlank(customer.getName())) {
+        if (StringUtils.isBlank(customer.getSurname())) {
             errors.rejectValue(SURNAME_FIELD, BLANK_INVALID_SURNAME_ERROR);
         }
 

@@ -8,7 +8,7 @@ Simple banking application for Blue Harvest coding challenge.
 2. Maven 3.
 
 ## Building the BlueHarvestBank Application
-1. Checkout the project code from GitHub. The application is available at **https://github.com/mohamed-morsey/BlueHarvestBank**.
+1. Checkout the project code from GitHub.
 2. Go to project folder.
 3. Run command **"mvn clean install"** to build the application including unit and integration tests.
 

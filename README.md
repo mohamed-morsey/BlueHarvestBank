@@ -1,7 +1,7 @@
 # Blue Harvest Banking Application
 Simple banking application for Blue Harvest coding challenge.
 
-##Instructions to Build and Start the BlueHarvestBank Application
+## Instructions to Build and Start the BlueHarvestBank Application
 
 ## Prerequisites
 1. JDK 1.8.

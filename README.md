@@ -1,7 +1,7 @@
-# BlueHarvestBank
+# Blue Harvest Banking Application
 Simple banking application for Blue Harvest coding challenge.
 
-# Instructions to Build and Start the BlueHarvestBank Application
+##Instructions to Build and Start the BlueHarvestBank Application
 
 ## Prerequisites
 1. JDK 1.8.
@@ -60,7 +60,7 @@ and returns the appropriate HTTP status code along with an error message.
 9. **Code Quality**: The code quality is inspected and check with [SonarQube](https://sonarcloud.io/about/sq).
 10. **Frontend**: The application has a very simple UI developed using [Thymeleaf](https://www.thymeleaf.org/).
 
-### Design Objectives
+## Design Objectives
 The main objectives of this design are:
 
 1. **Scalability**: We are using H2 database in embedded mode but it is quite simple to port it to 

@@ -43,7 +43,7 @@ The application has the following features:
 1. **Extensibility**: A generic interface called *"CrudService"* that incorporates the basic CRUD (create, read, update, 
 and delete) operations. This interface is implemented by *"CustomerService"* and *"AccountService"* 
 in order to support CRUD operations for customers and accounts. If a new entity is added and needs to be supported
-e.g. credit card, a service is created for it that should implement that interface.
+e.g. credit card, a service is created for this entity and should implement that interface.
 2. **Model-View-Controller(MVC)**: The application adheres to the MVC pattern via Spring framework.
 3. **Separation of Concerns (SoC)**: The application achieves separation of concerns (SoC) via applying 
 Data Transfer Object (DTO) pattern. For instance, for class *"Customer"* a DTO class called *"CustomerDto"*
@@ -54,7 +54,7 @@ that require to be performed as a single unit of work, i.e. in case of establish
 account with initial credit, an entry for this transaction must be add to *Transaction* table. 
 6. **Data Validation**: The application uses validators to check and validate input data, e.g. *"CustomerValidator"* 
 and *"AccountValidator"*.
-7. **Exception Handling**: The application defines an exception handler, called *"BankExceptionHandler*",which catches the exceptions thrown 
+7. **Exception Handling**: The application defines an exception handler, called *"BankExceptionHandler*", which catches the exceptions thrown 
 and returns the appropriate HTTP status code along with an error message.
 8. **Testing**: Unit and integration tests are used to cover the various application features.
 9. **Code Quality**: The code quality is inspected and checked with [SonarQube](https://sonarcloud.io/about/sq).
